@@ -25,4 +25,4 @@ docker run --ulimit nofile=1024 \
   -v "$(pwd)/.gitlint":/.gitlint \
   jorisroovers/gitlint \
   --target . \
-  --commits origin/main..HEAD
+  --commits origin/master..HEAD
