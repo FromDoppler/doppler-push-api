@@ -42,7 +42,7 @@ namespace Doppler.Push.Api.Contract
         //
         //     App instance was unregistered from FCM. This usually means that the token used is no longer valid and a new one must be used.
         //Unregistered = 6
-        public int? MessagingErrorCode { get; set; }
+        public int MessagingErrorCode { get; set; }
         public string Message { get; set; }
     }
 }

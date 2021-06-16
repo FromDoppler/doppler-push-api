@@ -9,6 +9,7 @@ namespace Doppler.Push.Api.Services
     {
         public async Task<MessageSendResponse> SendMulticast(MessageSendRequest request)
         {
+
             var message = new MulticastMessage()
             {
                 Notification = new Notification()
@@ -21,19 +22,21 @@ namespace Doppler.Push.Api.Services
 
             var response = await FirebaseMessaging.DefaultInstance.SendMulticastAsync(message);
 
-            var returnResponse = new MessageSendResponse();
-            returnResponse.Responses = response.Responses.Select(x => new ResponseItem
+            var returnResponse = new MessageSendResponse()
             {
-                IsSuccess = x.IsSuccess,
-                MessageId = x.MessageId,
-                Exception = x.IsSuccess ? null : new ExceptionItem
+                Responses = response.Responses.Select(x => new ResponseItem
                 {
-                    Message = x.Exception.Message,
-                    MessagingErrorCode = (int?)x.Exception.MessagingErrorCode
-                }
-            });
-            returnResponse.FailureCount = response.FailureCount;
-            returnResponse.SuccessCount = response.SuccessCount;
+                    IsSuccess = x.IsSuccess,
+                    MessageId = x.MessageId,
+                    Exception = x.IsSuccess ? null : new ExceptionItem
+                    {
+                        Message = x.Exception.Message,
+                        MessagingErrorCode = (int)x.Exception.MessagingErrorCode
+                    }
+                }),
+                FailureCount = response.FailureCount,
+                SuccessCount = response.SuccessCount
+            };
 
             return returnResponse;
         }
