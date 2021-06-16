@@ -6,8 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 using Doppler.Push.Api.Services;
 
 namespace Doppler.Push.Api
@@ -55,11 +53,6 @@ namespace Doppler.Push.Api
                 {
                     c.AddServer(new OpenApiServer() { Url = baseUrl });
                 };
-            });
-
-            FirebaseApp.Create(new AppOptions()
-            {
-                Credential = GoogleCredential.FromFile("firebase-secret-keys/firebase-adminsdk.json")
             });
 
             services.AddTransient<IFirebaseCloudMessageService, FirebaseCloudMessageService>();

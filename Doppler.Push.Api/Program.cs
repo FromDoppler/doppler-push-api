@@ -1,4 +1,6 @@
 using Doppler.Push.Api.Logging;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +12,10 @@ namespace Doppler.Push.Api
     {
         public static void Main(string[] args)
         {
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile("firebase-secret-keys/firebase-adminsdk.json")
+            });
             CreateHostBuilder(args).Build().Run();
         }
 
