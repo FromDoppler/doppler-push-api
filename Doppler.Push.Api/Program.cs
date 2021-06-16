@@ -12,10 +12,6 @@ namespace Doppler.Push.Api
     {
         public static void Main(string[] args)
         {
-            FirebaseApp.Create(new AppOptions()
-            {
-                Credential = GoogleCredential.FromFile("firebase-secret-keys/firebase-adminsdk.json")
-            });
             CreateHostBuilder(args).Build().Run();
         }
 
