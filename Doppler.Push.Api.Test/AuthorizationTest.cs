@@ -26,12 +26,12 @@ namespace Doppler.Push.Api.Test
         const string TOKEN_SUPERUSER_FALSE_EXPIRE_20330518 = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc1NVIjpmYWxzZSwiZXhwIjoyMDAwMDAwMDAwfQ.qMY3h8VhNxuOBciqrmXpTrRk8ElwDlT_3CYFzqJdXNjnJhKihFVMwjkWVw1EEckCWbKsRoBr-NgRV0SZ0JKWbMr2oGhZJWtqmKA05d8-i_MuuYbxtt--NUoQxg6AsMX989PGf6fSBzo_4szb7J0G6nUvvRxXfMnHMpaIAQUiBLNOoeKwnzsZFfI1ehmYGNmtc-2XyXOEHAnfZeBZw8uMWOp4A5hFBpVsaVCUiRirokjeCMWViVWT9NnVWbA60e_kfLjghEcXWaZfNnX9qtj4OC8QUB33ByUmwuYlTxNnu-qiEaJmbaaTeDD2JrKHf6MR59MlCHbb6BDWt20DBy73WQ";
 
         private readonly WebApplicationFactory<Startup> _factory;
-        private readonly HttpClient client;
+        private readonly HttpClient _client;
 
         public AuthorizationTest(WebApplicationFactory<Startup> factory)
         {
             _factory = factory;
-            client = _factory.CreateClient(new WebApplicationFactoryClientOptions());
+            _client = _factory.CreateClient(new WebApplicationFactoryClientOptions());
         }
 
         [Theory]
@@ -50,7 +50,7 @@ namespace Doppler.Push.Api.Test
             };
 
             // Act
-            var response = await client.SendAsync(request);
+            var response = await _client.SendAsync(request);
 
             // Assert
             Assert.Equal(expectedStatusCode, response.StatusCode);
