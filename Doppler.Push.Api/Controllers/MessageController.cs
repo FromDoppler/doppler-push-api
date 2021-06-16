@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Doppler.Push.Api.Controllers
 {
-    [Authorize]
+    [Authorize(Policies.ONLY_SUPERUSER)]
     [ApiController]
     [Route("[controller]")]
     public class MessageController : ControllerBase
@@ -19,9 +19,8 @@ namespace Doppler.Push.Api.Controllers
             _firebaseCloudMessageService = firebaseCloudMessageService;
         }
 
-        [Authorize(Policies.ONLY_SUPERUSER)]
         [HttpPost]
-        public async Task<IActionResult> MesssageSend(MessageSendRequest messageSend)
+        public async Task<IActionResult> MessageSend(MessageSendRequest messageSend)
         {
             var response = await _firebaseCloudMessageService.SendMulticast(messageSend);
 
