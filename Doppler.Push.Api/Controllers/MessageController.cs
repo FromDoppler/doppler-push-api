@@ -1,20 +1,30 @@
+using Doppler.Push.Api.Contract;
 using Doppler.Push.Api.DopplerSecurity;
+using Doppler.Push.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace Doppler.Push.Api.Controllers
 {
-    [Authorize]
+    [Authorize(Policies.ONLY_SUPERUSER)]
     [ApiController]
     [Route("[controller]")]
     public class MessageController : ControllerBase
     {
-        [Authorize(Policies.ONLY_SUPERUSER)]
-        [HttpPost]
-        public async Task<IActionResult> MesssageSend(string deviceToken)
+        private IFirebaseCloudMessageService _firebaseCloudMessageService;
+
+        public MessageController(IFirebaseCloudMessageService firebaseCloudMessageService)
         {
-            return Ok($"Hello! you have a valid SuperUser! - Device Token {deviceToken}");
+            _firebaseCloudMessageService = firebaseCloudMessageService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MessageSend(MessageSendRequest messageSend)
+        {
+            var response = await _firebaseCloudMessageService.SendMulticast(messageSend);
+
+            return Ok(response);
         }
     }
 }
