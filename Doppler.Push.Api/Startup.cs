@@ -22,6 +22,7 @@ namespace Doppler.Push.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<FirebaseCredential>(Configuration.GetSection(nameof(FirebaseCredential)));
             services.AddDopplerSecurity();
             services.AddControllers();
             services.AddSwaggerGen(c =>
