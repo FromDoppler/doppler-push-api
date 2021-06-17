@@ -7,8 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using Doppler.Push.Api.Services;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 
 namespace Doppler.Push.Api
 {
@@ -57,15 +55,7 @@ namespace Doppler.Push.Api
                 };
             });
 
-            if (FirebaseApp.DefaultInstance == null)
-            {
-                FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromFile(Configuration.GetValue<string>("FirebaseCredencialAdminSdk"))
-                });
-            }
-
-            services.AddTransient<IFirebaseCloudMessageService, FirebaseCloudMessageService>();
+            services.AddSingleton<IFirebaseCloudMessageService, FirebaseCloudMessageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

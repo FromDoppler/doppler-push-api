@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -33,5 +32,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Doppler.Push.Api\Doppler.Push.Api.csproj" />
   </ItemGroup>
-
 </Project>

@@ -30,7 +30,7 @@ namespace Doppler.Push.Api
                 .WithWebHostBuilder((e) =>
                     e.ConfigureTestServices(services =>
                     {
-                        services.AddTransient<IFirebaseCloudMessageService>(s => _firebaseCloudMessageService.Object);
+                        services.AddSingleton<IFirebaseCloudMessageService>(s => _firebaseCloudMessageService.Object);
                     }))
                 .CreateClient(new WebApplicationFactoryClientOptions());
         }
