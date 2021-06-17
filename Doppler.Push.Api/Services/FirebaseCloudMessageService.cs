@@ -1,29 +1,30 @@
 using Doppler.Push.Api.Contract;
-using FirebaseAdmin.Messaging;
-using System.Threading.Tasks;
-using System.Linq;
 using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Options;
+using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Doppler.Push.Api.Services
 {
     public class FirebaseCloudMessageService : IFirebaseCloudMessageService
     {
         private readonly FirebaseMessaging _firebaseService;
+
         public FirebaseCloudMessageService(IOptions<FirebaseCredential> firebaseCredential)
         {
             FirebaseApp.Create(new AppOptions()
             {
                 Credential = GoogleCredential.FromJson(JsonSerializer.Serialize(firebaseCredential.Value))
             });
+
             _firebaseService = FirebaseMessaging.DefaultInstance;
         }
 
         public async Task<MessageSendResponse> SendMulticast(MessageSendRequest request)
         {
-
             var message = new MulticastMessage()
             {
                 Notification = new Notification()
