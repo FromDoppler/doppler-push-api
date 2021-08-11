@@ -1,6 +1,6 @@
 namespace Doppler.Push.Api.Contract
 {
-    public class MessageSendRequest
+    public class FirebaseMessageSendRequest
     {
         public string[] Tokens { get; set; }
         public string NotificationTitle { get; set; }

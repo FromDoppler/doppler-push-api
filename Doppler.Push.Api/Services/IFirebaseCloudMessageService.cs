@@ -5,6 +5,6 @@ namespace Doppler.Push.Api.Services
 {
     public interface IFirebaseCloudMessageService
     {
-        Task<MessageSendResponse> SendMulticast(MessageSendRequest request);
+        Task<FirebaseMessageSendResponse> SendMulticast(FirebaseMessageSendRequest request);
     }
 }
