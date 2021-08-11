@@ -43,6 +43,7 @@ namespace Doppler.Push.Api.Services
                 {
                     IsSuccess = x.IsSuccess,
                     MessageId = x.MessageId,
+                    DeviceToken = request.Tokens[index],
                     Exception = x.IsSuccess ? null : new FirebaseExceptionItem
                     {
                         Message = x.Exception.Message,

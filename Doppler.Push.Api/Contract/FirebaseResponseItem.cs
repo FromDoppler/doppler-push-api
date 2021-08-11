@@ -5,5 +5,6 @@ namespace Doppler.Push.Api.Contract
         public string MessageId { get; set; }
         public bool IsSuccess { get; set; }
         public FirebaseExceptionItem Exception { get; set; }
+        public string DeviceToken { get; set; }
     }
 }
