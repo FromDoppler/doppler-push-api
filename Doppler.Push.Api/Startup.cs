@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using Doppler.Push.Api.Services;
+using Doppler.Push.Api.Services.FirebaseSentMessagesHandling;
 
 namespace Doppler.Push.Api
 {
@@ -57,6 +58,10 @@ namespace Doppler.Push.Api
             });
 
             services.AddSingleton<IFirebaseCloudMessageService, FirebaseCloudMessageService>();
+            services.AddHttpContextAccessor();
+            services.Configure<FirebaseSentMessagesHandlerSettings>(Configuration.GetSection(nameof(FirebaseSentMessagesHandlerSettings)));
+            services.AddScoped<IPushContactApiTokenGetter, PushContactApiTokenGetter>();
+            services.AddScoped<IFirebaseSentMessagesHandler, FirebaseSentMessagesHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
