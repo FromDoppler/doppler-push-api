@@ -23,7 +23,7 @@ namespace Doppler.Push.Api.Services
             _firebaseService = FirebaseMessaging.DefaultInstance;
         }
 
-        public async Task<MessageSendResponse> SendMulticast(MessageSendRequest request)
+        public async Task<FirebaseMessageSendResponse> SendMulticast(FirebaseMessageSendRequest request)
         {
             var message = new MulticastMessage()
             {
@@ -37,13 +37,14 @@ namespace Doppler.Push.Api.Services
 
             var response = await _firebaseService.SendMulticastAsync(message);
 
-            var returnResponse = new MessageSendResponse()
+            var returnResponse = new FirebaseMessageSendResponse()
             {
-                Responses = response.Responses.Select(x => new ResponseItem
+                Responses = response.Responses.Select((x, index) => new FirebaseResponseItem
                 {
                     IsSuccess = x.IsSuccess,
                     MessageId = x.MessageId,
-                    Exception = x.IsSuccess ? null : new ExceptionItem
+                    DeviceToken = request.Tokens[index],
+                    Exception = x.IsSuccess ? null : new FirebaseExceptionItem
                     {
                         Message = x.Exception.Message,
                         MessagingErrorCode = x.Exception.MessagingErrorCode.HasValue ? (int)x.Exception.MessagingErrorCode : 0

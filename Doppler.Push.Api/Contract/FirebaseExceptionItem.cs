@@ -1,25 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Doppler.Push.Api.Contract
 {
-    public class MessageSendResponse
-    {
-        public IEnumerable<ResponseItem> Responses { get; set; }
-        public int SuccessCount { get; set; }
-        public int FailureCount { get; set; }
-    }
-
-    public class ResponseItem
-    {
-        public string MessageId { get; set; }
-        public bool IsSuccess { get; set; }
-        public ExceptionItem Exception { get; set; }
-    }
-
-    public class ExceptionItem
+    public class FirebaseExceptionItem
     {
         // Summary:
         //     APNs certificate or web push auth key was invalid or missing.
