@@ -140,11 +140,11 @@ namespace Doppler.Push.Api
                     It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error handling following sent messages")),
                     It.IsAny<Exception>(),
                     It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
-                Times.Once);
+                Times.AtLeastOnce);
             httpTest.ShouldNotHaveMadeACall();
         }
 
-        [Fact]
+        [Fact(Skip = "All sent messages are handle")]
         public async Task HandleSentMessagesAsync_should_log_warning_message_when_has_not_handling_sent_messages()
         {
             // Arrange
@@ -189,7 +189,7 @@ namespace Doppler.Push.Api
         }
 
         [Fact]
-        public async Task HandleSentMessagesAsync_should_does_not_call_push_contact_api_when_firebase_responses_has_not_fatal_messaging_error_codes()
+        public async Task HandleSentMessagesAsync_should_does_not_call_push_contact_api_delete_when_firebase_responses_has_not_fatal_messaging_error_codes()
         {
             // Arrange
             var fixture = new Fixture();
@@ -219,7 +219,8 @@ namespace Doppler.Push.Api
             await sut.HandleSentMessagesAsync(firebaseMessageSendResponse);
 
             // Assert
-            httpTest.ShouldNotHaveMadeACall();
+            Assert.DoesNotContain(httpTest.CallLog,
+                call => call.Request.Url == $"{firebaseSentMessagesHandlerSettingsDefault.PushContactApiUrl}/PushContact" && call.Request.Verb == HttpMethod.Delete);
         }
 
         [Fact]
@@ -307,7 +308,7 @@ namespace Doppler.Push.Api
                     It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error handling following sent messages")),
                     It.IsAny<Exception>(),
                     It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
-                Times.Once);
+                Times.AtLeastOnce);
         }
     }
 }
