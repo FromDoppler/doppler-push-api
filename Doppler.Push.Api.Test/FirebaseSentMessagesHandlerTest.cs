@@ -259,6 +259,32 @@ namespace Doppler.Push.Api
                 .Times(1);
         }
 
+        [Fact]
+        public async Task HandleSentMessagesAsync_should_call_push_contact_api_history_events_bulk_when_firebase_responses_has_sent_messages()
+        {
+            // Arrange
+            var fixture = new Fixture();
+
+            using var httpTest = new HttpTest();
+
+            var firebaseMessageSendResponse = new FirebaseMessageSendResponse
+            {
+                SuccessCount = fixture.Create<int>(),
+                FailureCount = fixture.Create<int>(),
+                Responses = fixture.CreateMany<FirebaseResponseItem>()
+            };
+
+            var sut = CreateSut();
+
+            // Act
+            await sut.HandleSentMessagesAsync(firebaseMessageSendResponse);
+
+            // Assert
+            httpTest.ShouldHaveCalled($"{firebaseSentMessagesHandlerSettingsDefault.PushContactApiUrl}/history-events/_bulk")
+                .WithVerb(HttpMethod.Post)
+                .Times(1);
+        }
+
         [Theory]
         [InlineData(500)]
         [InlineData(400)]
