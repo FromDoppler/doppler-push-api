@@ -223,7 +223,7 @@ namespace Doppler.Push.Api
         }
 
         [Fact]
-        public async Task HandleSentMessagesAsync_should_call_push_contact_api_delete_when_firebase_responses_has_fatal_messaging_error_codes()
+        public async Task HandleSentMessagesAsync_should_call_push_contact_api_delete_bulk_when_firebase_responses_has_fatal_messaging_error_codes()
         {
             // Arrange
             var fixture = new Fixture();
@@ -253,7 +253,7 @@ namespace Doppler.Push.Api
             await sut.HandleSentMessagesAsync(firebaseMessageSendResponse);
 
             // Assert
-            httpTest.ShouldHaveCalled($"{firebaseSentMessagesHandlerSettingsDefault.PushContactApiUrl}/PushContact")
+            httpTest.ShouldHaveCalled($"{firebaseSentMessagesHandlerSettingsDefault.PushContactApiUrl}/push-contacts/_bulk")
                 .WithVerb(HttpMethod.Delete)
                 .Times(1);
         }

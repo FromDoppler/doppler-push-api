@@ -57,7 +57,7 @@ namespace Doppler.Push.Api.Services.FirebaseSentMessagesHandling
                 var pushContactApiToken = await _pushContactApiTokenGetter.GetTokenAsync();
 
                 var response = await _settings.PushContactApiUrl
-                    .AppendPathSegment("PushContact")
+                    .AppendPathSegment("push-contacts/_bulk")
                     .WithHeader("Authorization", $"Bearer {pushContactApiToken}")
                     .SendJsonAsync(HttpMethod.Delete, notValidDeviceTokens);
 
