@@ -38,15 +38,48 @@ namespace Doppler.Push.Api.Services.FirebaseSentMessagesHandling
                 return;
             }
 
+            var now = DateTime.UtcNow;
+
+            try
+            {
+                var pushContactHistoryEvents = firebaseMessageSendResponse.Responses
+                    .Select(x =>
+                    {
+                        return new
+                        {
+                            DeviceToken = x.DeviceToken,
+                            SentSuccess = x.IsSuccess,
+                            EventDate = now,
+                            Details = !x.IsSuccess ? $"{nameof(x.Exception.MessagingErrorCode)} {x.Exception.MessagingErrorCode} - {nameof(x.Exception.Message)} {x.Exception.Message}" : string.Empty
+                        };
+                    });
+
+                var pushContactApiToken = await _pushContactApiTokenGetter.GetTokenAsync();
+
+                var response = await _settings.PushContactApiUrl
+                    .AppendPathSegment("history-events/_bulk")
+                    .WithHeader("Authorization", $"Bearer {pushContactApiToken}")
+                    .SendJsonAsync(HttpMethod.Post, pushContactHistoryEvents);
+
+                if (response.StatusCode != 200)
+                {
+                    _logger.LogError(@"Error adding following
+push contact history events: {@pushContactHistoryEvents}.
+Response status code: {@StatusCode}, ", pushContactHistoryEvents, response.StatusCode);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error handling following sent messages: {@sentMessages}", firebaseMessageSendResponse.Responses);
+
+                //TODO queue messages to try again
+            }
+
             var sentMessagesWithNotValidDeviceToken = firebaseMessageSendResponse.Responses
             .Where(x => !x.IsSuccess && _settings.FatalMessagingErrorCodes.Any(y => y == x.Exception.MessagingErrorCode));
 
-            if (!sentMessagesWithNotValidDeviceToken.Any())
+            if (sentMessagesWithNotValidDeviceToken == null || !sentMessagesWithNotValidDeviceToken.Any())
             {
-                var notHandlingSentMessages = firebaseMessageSendResponse.Responses.Where(x => !sentMessagesWithNotValidDeviceToken.Any(y => y.MessageId == x.MessageId));
-
-                _logger.LogWarning("Not handling for following Firebase sent messages: {@notHandlingSentMessages}", notHandlingSentMessages);
-
                 return;
             }
 
@@ -74,8 +107,6 @@ Response status code: {@StatusCode}, ", notValidDeviceTokens, response.StatusCod
 
                 //TODO queue messages to try again
             }
-
-            //TODO handle sent messages with MessagingErrorCode not in _settings.FatalMessagingErrorCodes
         }
     }
 }
