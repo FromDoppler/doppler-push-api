@@ -58,7 +58,7 @@ namespace Doppler.Push.Api.Services.FirebaseSentMessagesHandling
 
                 var response = await _settings.PushContactApiUrl
                     .AppendPathSegment("history-events/_bulk")
-                    .WithHeader("Authorization", $"Bearer {pushContactApiToken}")
+                    .WithOAuthBearerToken(pushContactApiToken)
                     .SendJsonAsync(HttpMethod.Post, pushContactHistoryEvents);
 
                 if (response.StatusCode != 200)
@@ -91,7 +91,7 @@ Response status code: {@StatusCode}, ", pushContactHistoryEvents, response.Statu
 
                 var response = await _settings.PushContactApiUrl
                     .AppendPathSegment("push-contacts/_bulk")
-                    .WithHeader("Authorization", $"Bearer {pushContactApiToken}")
+                    .WithOAuthBearerToken(pushContactApiToken)
                     .SendJsonAsync(HttpMethod.Delete, notValidDeviceTokens);
 
                 if (response.StatusCode != 200)
