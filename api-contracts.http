@@ -1,0 +1,9 @@
+### Obtain device
+GET /devices/{token}
+Authorization: Bearer AuthToken
+
+## Success Response Body
+# {
+#  "token": "string",
+#  "isValid": "bool"
+# }
