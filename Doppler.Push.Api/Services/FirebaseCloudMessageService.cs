@@ -1,8 +1,10 @@
 using Doppler.Push.Api.Contract;
 using FirebaseAdmin;
+using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Options;
+using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -55,6 +57,43 @@ namespace Doppler.Push.Api.Services
             };
 
             return returnResponse;
+        }
+
+        public async Task<Device> GetDevice(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentException($"'{nameof(token)}' cannot be null or empty.", nameof(token));
+            }
+
+            var dummyMessage = new Message
+            {
+                Notification = new Notification()
+                {
+                    Title = "dummy title",
+                    Body = "dummy title",
+                },
+                Token = token
+            };
+
+            try
+            {
+                await _firebaseService.SendAsync(dummyMessage, true);
+            }
+            catch (FirebaseMessagingException)
+            {
+                return new Device
+                {
+                    Token = token,
+                    IsValid = false
+                };
+            }
+
+            return new Device
+            {
+                Token = token,
+                IsValid = true
+            };
         }
     }
 }
