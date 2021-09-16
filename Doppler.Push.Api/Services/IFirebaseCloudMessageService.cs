@@ -6,5 +6,7 @@ namespace Doppler.Push.Api.Services
     public interface IFirebaseCloudMessageService
     {
         Task<FirebaseMessageSendResponse> SendMulticast(FirebaseMessageSendRequest request);
+
+        Task<Device> GetDevice(string token);
     }
 }
