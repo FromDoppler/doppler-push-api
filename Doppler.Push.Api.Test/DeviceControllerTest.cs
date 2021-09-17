@@ -37,7 +37,85 @@ namespace Doppler.Push.Api
             _factory = factory;
         }
 
+        [Fact]
+        public async Task Get_should_not_require_token()
+        {
+            // Arrange
+            var fixture = new Fixture();
+
+            Device device = fixture.Create<Device>();
+
+            var firebaseCloudMessageServiceMock = new Mock<IFirebaseCloudMessageService>();
+
+            firebaseCloudMessageServiceMock
+                .Setup(x => x.GetDevice(It.IsAny<string>()))
+                .ReturnsAsync(device);
+
+            var client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton(firebaseCloudMessageServiceMock.Object);
+                });
+
+            }).CreateClient(new WebApplicationFactoryClientOptions());
+
+            var deviceToken = fixture.Create<string>();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}");
+
+            // Act
+            var response = await client.SendAsync(request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
         [Theory]
+        [InlineData(TOKEN_EMPTY)]
+        [InlineData(TOKEN_BROKEN)]
+        [InlineData(TOKEN_EXPIRE_20330518)]
+        [InlineData(TOKEN_SUPERUSER_EXPIRE_20330518)]
+        [InlineData(TOKEN_SUPERUSER_EXPIRE_20010908)]
+        [InlineData(TOKEN_SUPERUSER_FALSE_EXPIRE_20330518)]
+        [InlineData(TOKEN_ACCOUNT_123_TEST1_AT_TEST_DOT_COM_EXPIRE_20330518)]
+        public async Task Get_should_accept_any_token(string token)
+        {
+            // Arrange
+            var fixture = new Fixture();
+
+            Device device = fixture.Create<Device>();
+
+            var firebaseCloudMessageServiceMock = new Mock<IFirebaseCloudMessageService>();
+
+            firebaseCloudMessageServiceMock
+                .Setup(x => x.GetDevice(It.IsAny<string>()))
+                .ReturnsAsync(device);
+
+            var client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton(firebaseCloudMessageServiceMock.Object);
+                });
+
+            }).CreateClient(new WebApplicationFactoryClientOptions());
+
+            var deviceToken = fixture.Create<string>();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}")
+            {
+                Headers = { { "Authorization", $"Bearer {token}" } },
+            };
+
+            // Act
+            var response = await client.SendAsync(request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Theory(Skip = "Now allows anonymous")]
         [InlineData(TOKEN_EMPTY)]
         [InlineData(TOKEN_BROKEN)]
         public async Task Get_should_return_unauthorized_when_token_is_not_valid(string token)
@@ -60,7 +138,7 @@ namespace Doppler.Push.Api
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [Theory]
+        [Theory(Skip = "Now allows anonymous")]
         [InlineData(TOKEN_SUPERUSER_EXPIRE_20010908)]
         public async Task Get_should_return_unauthorized_when_token_is_a_expired_superuser_token(string token)
         {
@@ -82,7 +160,7 @@ namespace Doppler.Push.Api
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [Theory]
+        [Theory(Skip = "Now allows anonymous")]
         [InlineData(TOKEN_EXPIRE_20330518)]
         [InlineData(TOKEN_SUPERUSER_FALSE_EXPIRE_20330518)]
         [InlineData(TOKEN_ACCOUNT_123_TEST1_AT_TEST_DOT_COM_EXPIRE_20330518)]
@@ -106,7 +184,7 @@ namespace Doppler.Push.Api
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
-        [Fact]
+        [Fact(Skip = "Now allows anonymous")]
         public async Task Get_should_return_unauthorized_when_authorization_header_is_empty()
         {
             // Arrange
@@ -147,10 +225,7 @@ namespace Doppler.Push.Api
 
             var deviceToken = fixture.Create<string>();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}")
-            {
-                Headers = { { "Authorization", $"Bearer {TOKEN_SUPERUSER_EXPIRE_20330518}" } }
-            };
+            var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}");
 
             // Act
             var response = await client.SendAsync(request);
@@ -184,10 +259,7 @@ namespace Doppler.Push.Api
 
             var deviceToken = fixture.Create<string>();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}")
-            {
-                Headers = { { "Authorization", $"Bearer {TOKEN_SUPERUSER_EXPIRE_20330518}" } }
-            };
+            var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}");
 
             // Act
             var response = await client.SendAsync(request);
@@ -221,10 +293,7 @@ namespace Doppler.Push.Api
 
             var deviceToken = fixture.Create<string>();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}")
-            {
-                Headers = { { "Authorization", $"Bearer {TOKEN_SUPERUSER_EXPIRE_20330518}" } }
-            };
+            var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}");
 
             // Act
             var response = await client.SendAsync(request);

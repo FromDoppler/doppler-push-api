@@ -19,6 +19,7 @@ namespace Doppler.Push.Api.Controllers
             _firebaseCloudMessageService = firebaseCloudMessageService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("devices/{token}")]
         public async Task<ActionResult<Device>> Get([FromRoute] string token)
