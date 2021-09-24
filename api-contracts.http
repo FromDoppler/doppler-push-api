@@ -7,3 +7,33 @@ Authorization: Bearer AuthToken
 #  "token": "string",
 #  "isValid": "bool"
 # }
+
+### Send push notifications
+POST /message
+Authorization: Bearer AuthToken
+Content-Type: application/json
+
+{
+  "tokens": [
+    "string"
+  ],
+  "notificationTitle": "string",
+  "notificationBody": "string"
+}
+
+## Success Response Body
+# {
+#  "responses": [
+#    {
+#      "messageId": "string",
+#      "isSuccess": "bool",
+#      "exception": {
+#        "messagingErrorCode": "int",
+#        "message": "string"
+#      },
+#      "deviceToken": "string"
+#    }
+#  ],
+#  "successCount": "int",
+#  "failureCount": "int"
+# }
