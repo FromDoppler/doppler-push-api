@@ -35,6 +35,14 @@ namespace Doppler.Push.Api.Services
                     Body = request.NotificationBody,
                 },
                 Tokens = request.Tokens,
+                Webpush = !string.IsNullOrEmpty(request.NotificationOnClickLink) ?
+                new WebpushConfig
+                {
+                    FcmOptions = new WebpushFcmOptions()
+                    {
+                        Link = request.NotificationOnClickLink
+                    }
+                } : null,
             };
 
             var response = await _firebaseService.SendMulticastAsync(message);
