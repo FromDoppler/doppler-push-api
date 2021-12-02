@@ -71,7 +71,7 @@ namespace Doppler.Push.Api.Services
                 Notification = new Notification()
                 {
                     Title = "dummy title",
-                    Body = "dummy title",
+                    Body = "dummy body",
                 },
                 Token = token
             };
