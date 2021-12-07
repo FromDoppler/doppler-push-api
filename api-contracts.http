@@ -18,7 +18,8 @@ Content-Type: application/json
     "string"
   ],
   "notificationTitle": "string",
-  "notificationBody": "string"
+  "notificationBody": "string",
+  "NotificationOnClickLink": "string"
 }
 
 ## Success Response Body
