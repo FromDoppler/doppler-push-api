@@ -5,5 +5,6 @@ namespace Doppler.Push.Api.Contract
         public string[] Tokens { get; set; }
         public string NotificationTitle { get; set; }
         public string NotificationBody { get; set; }
+        public string NotificationOnClickLink { get; set; }
     }
 }
