@@ -67,6 +67,11 @@ namespace Doppler.Push.Api.Services
             return returnResponse;
         }
 
+        public async Task<FirebaseMessageSendResponse> SendMulticastAsBatches(FirebaseMessageSendRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Device> GetDevice(string token)
         {
             if (string.IsNullOrEmpty(token))
