@@ -22,7 +22,7 @@ namespace Doppler.Push.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> MessageSend(FirebaseMessageSendRequest messageSend)
         {
-            var response = await _firebaseCloudMessageService.SendMulticast(messageSend);
+            var response = await _firebaseCloudMessageService.SendMulticastAsBatches(messageSend);
 
             return Ok(response);
         }
