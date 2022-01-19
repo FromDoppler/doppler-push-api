@@ -23,6 +23,7 @@ namespace Doppler.Push.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<FirebaseCredential>(Configuration.GetSection(nameof(FirebaseCredential)));
+            services.Configure<FirebaseCloudMessageServiceSettings>(Configuration.GetSection(nameof(FirebaseCloudMessageServiceSettings)));
             services.AddDopplerSecurity();
             services.AddControllers();
             services.AddSwaggerGen(c =>

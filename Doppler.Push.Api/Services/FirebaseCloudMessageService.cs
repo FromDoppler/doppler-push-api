@@ -14,8 +14,9 @@ namespace Doppler.Push.Api.Services
     public class FirebaseCloudMessageService : IFirebaseCloudMessageService
     {
         private readonly FirebaseMessaging _firebaseService;
+        private readonly FirebaseCloudMessageServiceSettings _firebaseCloudMessageServiceSettings;
 
-        public FirebaseCloudMessageService(IOptions<FirebaseCredential> firebaseCredential)
+        public FirebaseCloudMessageService(IOptions<FirebaseCredential> firebaseCredential, IOptions<FirebaseCloudMessageServiceSettings> firebaseCloudMessageServiceSettings)
         {
             FirebaseApp.Create(new AppOptions()
             {
@@ -23,6 +24,8 @@ namespace Doppler.Push.Api.Services
             });
 
             _firebaseService = FirebaseMessaging.DefaultInstance;
+
+            _firebaseCloudMessageServiceSettings = firebaseCloudMessageServiceSettings.Value;
         }
 
         public async Task<FirebaseMessageSendResponse> SendMulticast(FirebaseMessageSendRequest request)
