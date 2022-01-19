@@ -4,7 +4,9 @@ using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Options;
+using MoreLinq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -72,7 +74,36 @@ namespace Doppler.Push.Api.Services
 
         public async Task<FirebaseMessageSendResponse> SendMulticastAsBatches(FirebaseMessageSendRequest request)
         {
-            throw new NotImplementedException();
+            var requestsBatches = request.Tokens
+                .Batch(_firebaseCloudMessageServiceSettings.BatchesSize)
+                .Select(x =>
+                    new FirebaseMessageSendRequest
+                    {
+                        Tokens = x as string[],
+                        NotificationTitle = request.NotificationTitle,
+                        NotificationBody = request.NotificationBody,
+                        NotificationOnClickLink = request.NotificationOnClickLink
+                    });
+
+            var allResponses = new List<FirebaseResponseItem>();
+            var allFailureCount = 0;
+            var allSuccessCount = 0;
+
+            foreach (var currentRequest in requestsBatches)
+            {
+                var response = await SendMulticast(currentRequest);
+
+                allResponses.AddRange(response.Responses);
+                allFailureCount += response.FailureCount;
+                allSuccessCount += response.SuccessCount;
+            }
+
+            return new FirebaseMessageSendResponse
+            {
+                Responses = allResponses,
+                FailureCount = allFailureCount,
+                SuccessCount = allSuccessCount
+            };
         }
 
         public async Task<Device> GetDevice(string token)
