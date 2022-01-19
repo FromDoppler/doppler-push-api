@@ -75,7 +75,7 @@ namespace Doppler.Push.Api.Services
         public async Task<FirebaseMessageSendResponse> SendMulticastAsBatches(FirebaseMessageSendRequest request)
         {
             var requestsBatches = request.Tokens
-                .Batch(_firebaseCloudMessageServiceSettings.BatchesSize)
+                .Batch(_firebaseCloudMessageServiceSettings.BatchesSize) // TODO: replace with Enumerable.Chunk after NET 6 migration https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.chunk?view=net-6.0
                 .Select(x =>
                     new FirebaseMessageSendRequest
                     {
@@ -85,6 +85,7 @@ namespace Doppler.Push.Api.Services
                         NotificationOnClickLink = request.NotificationOnClickLink
                     });
 
+            // TODO: refactor to use a declarative implementation instead of mutable variables
             var allResponses = new List<FirebaseResponseItem>();
             var allFailureCount = 0;
             var allSuccessCount = 0;
