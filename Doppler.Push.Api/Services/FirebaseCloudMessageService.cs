@@ -4,7 +4,9 @@ using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Options;
+using MoreLinq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,8 +16,9 @@ namespace Doppler.Push.Api.Services
     public class FirebaseCloudMessageService : IFirebaseCloudMessageService
     {
         private readonly FirebaseMessaging _firebaseService;
+        private readonly FirebaseCloudMessageServiceSettings _firebaseCloudMessageServiceSettings;
 
-        public FirebaseCloudMessageService(IOptions<FirebaseCredential> firebaseCredential)
+        public FirebaseCloudMessageService(IOptions<FirebaseCredential> firebaseCredential, IOptions<FirebaseCloudMessageServiceSettings> firebaseCloudMessageServiceSettings)
         {
             FirebaseApp.Create(new AppOptions()
             {
@@ -23,6 +26,8 @@ namespace Doppler.Push.Api.Services
             });
 
             _firebaseService = FirebaseMessaging.DefaultInstance;
+
+            _firebaseCloudMessageServiceSettings = firebaseCloudMessageServiceSettings.Value;
         }
 
         public async Task<FirebaseMessageSendResponse> SendMulticast(FirebaseMessageSendRequest request)
@@ -65,6 +70,41 @@ namespace Doppler.Push.Api.Services
             };
 
             return returnResponse;
+        }
+
+        public async Task<FirebaseMessageSendResponse> SendMulticastAsBatches(FirebaseMessageSendRequest request)
+        {
+            var requestsBatches = request.Tokens
+                .Batch(_firebaseCloudMessageServiceSettings.BatchesSize) // TODO: replace with Enumerable.Chunk after NET 6 migration https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.chunk?view=net-6.0
+                .Select(x =>
+                    new FirebaseMessageSendRequest
+                    {
+                        Tokens = x as string[],
+                        NotificationTitle = request.NotificationTitle,
+                        NotificationBody = request.NotificationBody,
+                        NotificationOnClickLink = request.NotificationOnClickLink
+                    });
+
+            // TODO: refactor to use a declarative implementation instead of mutable variables
+            var allResponses = new List<FirebaseResponseItem>();
+            var allFailureCount = 0;
+            var allSuccessCount = 0;
+
+            foreach (var currentRequest in requestsBatches)
+            {
+                var response = await SendMulticast(currentRequest);
+
+                allResponses.AddRange(response.Responses);
+                allFailureCount += response.FailureCount;
+                allSuccessCount += response.SuccessCount;
+            }
+
+            return new FirebaseMessageSendResponse
+            {
+                Responses = allResponses,
+                FailureCount = allFailureCount,
+                SuccessCount = allSuccessCount
+            };
         }
 
         public async Task<Device> GetDevice(string token)

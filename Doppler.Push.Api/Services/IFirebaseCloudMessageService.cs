@@ -7,6 +7,8 @@ namespace Doppler.Push.Api.Services
     {
         Task<FirebaseMessageSendResponse> SendMulticast(FirebaseMessageSendRequest request);
 
+        Task<FirebaseMessageSendResponse> SendMulticastAsBatches(FirebaseMessageSendRequest request);
+
         Task<Device> GetDevice(string token);
     }
 }
