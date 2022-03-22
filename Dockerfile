@@ -14,15 +14,13 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0.102-bullseye-slim AS restore
 WORKDIR /src
 COPY ./*.sln ./
 COPY */*.csproj ./
-COPY ./.config/dotnet-tools.json ./.config/
 # Take into account using the same name for the folder and the .csproj and only one folder level
 RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done
-RUN dotnet tool restore
 RUN dotnet restore
 
 FROM restore AS build
 COPY . .
-RUN dotnet dotnet-format --check
+RUN dotnet format --verify-no-changes --verbosity d
 RUN dotnet build -c Release
 
 FROM build AS test
