@@ -29,7 +29,7 @@ RUN dotnet test
 FROM build AS publish
 RUN dotnet publish "./Doppler.Push.Api/Doppler.Push.Api.csproj" -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.6-bullseye-slim AS final
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.7-bullseye-slim AS final
 WORKDIR /app
 EXPOSE 80
 COPY --from=publish /app/publish .
