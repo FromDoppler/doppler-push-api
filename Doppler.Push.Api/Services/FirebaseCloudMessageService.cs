@@ -38,6 +38,7 @@ namespace Doppler.Push.Api.Services
                 {
                     Title = request.NotificationTitle,
                     Body = request.NotificationBody,
+                    ImageUrl = request.ImageUrl
                 },
                 Tokens = request.Tokens,
                 Webpush = !string.IsNullOrEmpty(request.NotificationOnClickLink) ?
@@ -82,7 +83,8 @@ namespace Doppler.Push.Api.Services
                         Tokens = x as string[],
                         NotificationTitle = request.NotificationTitle,
                         NotificationBody = request.NotificationBody,
-                        NotificationOnClickLink = request.NotificationOnClickLink
+                        NotificationOnClickLink = request.NotificationOnClickLink,
+                        ImageUrl = request.ImageUrl,
                     });
 
             // TODO: refactor to use a declarative implementation instead of mutable variables
