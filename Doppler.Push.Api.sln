@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc Files", "Misc Files", 
 		.prettierignore = .prettierignore
 		api-contracts.http = api-contracts.http
 		gitlint.sh = gitlint.sh
-		Jenkinsfile = Jenkinsfile
+		doppler-jenkins-ci.groovy = doppler-jenkins-ci.groovy
 		README.md = README.md
 	EndProjectSection
 EndProject
