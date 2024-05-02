@@ -30,7 +30,7 @@ namespace Doppler.Push.Api.Services
             _firebaseCloudMessageServiceSettings = firebaseCloudMessageServiceSettings.Value;
         }
 
-        public async Task<FirebaseMessageSendResponse> SendMulticast(FirebaseMessageSendRequest request)
+        public async Task<FirebaseMessageSendResponse> SendMulticast(PushNotificationDTO request)
         {
             var message = new MulticastMessage()
             {
@@ -73,12 +73,12 @@ namespace Doppler.Push.Api.Services
             return returnResponse;
         }
 
-        public async Task<FirebaseMessageSendResponse> SendMulticastAsBatches(FirebaseMessageSendRequest request)
+        public async Task<FirebaseMessageSendResponse> SendMulticastAsBatches(PushNotificationDTO request)
         {
             var requestsBatches = request.Tokens
                 .Batch(_firebaseCloudMessageServiceSettings.BatchesSize) // TODO: replace with Enumerable.Chunk after NET 6 migration https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.chunk?view=net-6.0
                 .Select(x =>
-                    new FirebaseMessageSendRequest
+                    new PushNotificationDTO
                     {
                         Tokens = x as string[],
                         NotificationTitle = request.NotificationTitle,

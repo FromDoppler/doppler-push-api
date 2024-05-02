@@ -24,9 +24,9 @@ namespace Doppler.Push.Api
         public MessageControllerTest(WebApplicationFactory<Startup> factory)
         {
             _factory = factory;
-            _firebaseCloudMessageService.Setup(s => s.SendMulticast(It.IsAny<FirebaseMessageSendRequest>()))
+            _firebaseCloudMessageService.Setup(s => s.SendMulticast(It.IsAny<PushNotificationDTO>()))
                 .ReturnsAsync(new FirebaseMessageSendResponse { SuccessCount = 1, FailureCount = 0, Responses = null });
-            _firebaseCloudMessageService.Setup(s => s.SendMulticastAsBatches(It.IsAny<FirebaseMessageSendRequest>()))
+            _firebaseCloudMessageService.Setup(s => s.SendMulticastAsBatches(It.IsAny<PushNotificationDTO>()))
                 .ReturnsAsync(new FirebaseMessageSendResponse { SuccessCount = 1, FailureCount = 0, Responses = null });
             _client = _factory
                 .WithWebHostBuilder((e) =>
