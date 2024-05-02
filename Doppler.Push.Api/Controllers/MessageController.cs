@@ -12,9 +12,9 @@ namespace Doppler.Push.Api.Controllers
     [Route("[controller]")]
     public class MessageController : ControllerBase
     {
-        private IFirebaseCloudMessageService _firebaseCloudMessageService;
+        private IMessageService _firebaseCloudMessageService;
 
-        public MessageController(IFirebaseCloudMessageService firebaseCloudMessageService)
+        public MessageController(IMessageService firebaseCloudMessageService)
         {
             _firebaseCloudMessageService = firebaseCloudMessageService;
         }

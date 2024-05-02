@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Doppler.Push.Api.Services
 {
-    public interface IFirebaseCloudMessageService
+    public interface IMessageService
     {
         Task<MessageSendResponse> SendMulticast(PushNotificationDTO request);
 

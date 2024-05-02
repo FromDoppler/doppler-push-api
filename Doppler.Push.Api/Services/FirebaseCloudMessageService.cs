@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Doppler.Push.Api.Services
 {
-    public class FirebaseCloudMessageService : IFirebaseCloudMessageService
+    public class FirebaseCloudMessageService : IMessageService
     {
         private readonly FirebaseMessaging _firebaseService;
         private readonly FirebaseCloudMessageServiceSettings _firebaseCloudMessageServiceSettings;

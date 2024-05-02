@@ -45,7 +45,7 @@ namespace Doppler.Push.Api
 
             Device device = fixture.Create<Device>();
 
-            var firebaseCloudMessageServiceMock = new Mock<IFirebaseCloudMessageService>();
+            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
 
             firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
@@ -86,7 +86,7 @@ namespace Doppler.Push.Api
 
             Device device = fixture.Create<Device>();
 
-            var firebaseCloudMessageServiceMock = new Mock<IFirebaseCloudMessageService>();
+            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
 
             firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
@@ -208,7 +208,7 @@ namespace Doppler.Push.Api
             // Arrange
             var fixture = new Fixture();
 
-            var firebaseCloudMessageServiceMock = new Mock<IFirebaseCloudMessageService>();
+            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
 
             firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
@@ -242,7 +242,7 @@ namespace Doppler.Push.Api
 
             Device device = fixture.Create<Device>();
 
-            var firebaseCloudMessageServiceMock = new Mock<IFirebaseCloudMessageService>();
+            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
 
             firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
@@ -276,7 +276,7 @@ namespace Doppler.Push.Api
 
             Device device = fixture.Create<Device>();
 
-            var firebaseCloudMessageServiceMock = new Mock<IFirebaseCloudMessageService>();
+            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
 
             firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
