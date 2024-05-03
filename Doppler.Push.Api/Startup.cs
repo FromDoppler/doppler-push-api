@@ -1,4 +1,5 @@
 using Doppler.Push.Api.DopplerSecurity;
+using Doppler.Push.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
-using Doppler.Push.Api.Services;
 
 namespace Doppler.Push.Api
 {
@@ -57,7 +57,8 @@ namespace Doppler.Push.Api
                 };
             });
 
-            services.AddSingleton<IMessageService, FirebaseCloudMessageService>();
+            services.AddSingleton<FirebaseCloudMessageService>();
+            services.AddSingleton<DopplerMessageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

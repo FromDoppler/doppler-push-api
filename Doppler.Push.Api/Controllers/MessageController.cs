@@ -3,6 +3,9 @@ using Doppler.Push.Api.DopplerSecurity;
 using Doppler.Push.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Doppler.Push.Api.Controllers
@@ -13,10 +16,12 @@ namespace Doppler.Push.Api.Controllers
     public class MessageController : ControllerBase
     {
         private IMessageService _firebaseCloudMessageService;
+        private IMessageService _dopplerMessageService;
 
-        public MessageController(IMessageService firebaseCloudMessageService)
+        public MessageController(IServiceProvider serviceProvider)
         {
-            _firebaseCloudMessageService = firebaseCloudMessageService;
+            _firebaseCloudMessageService = serviceProvider.GetRequiredService<FirebaseCloudMessageService>();
+            _dopplerMessageService = serviceProvider.GetRequiredService<DopplerMessageService>();
         }
 
         [HttpPost]
@@ -33,6 +38,40 @@ namespace Doppler.Push.Api.Controllers
             var response = await _firebaseCloudMessageService.SendMulticastAsBatches(dto);
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("/webpush")]
+        public async Task<IActionResult> SendWebPush(PushNotificationRequest pushNotificationRequest)
+        {
+            // TODO: reply 400 when "Suscriptions" field is missing
+            var dto = new PushNotificationDTO()
+            {
+                NotificationTitle = pushNotificationRequest.NotificationTitle,
+                NotificationBody = pushNotificationRequest.NotificationBody,
+                NotificationOnClickLink = pushNotificationRequest.NotificationOnClickLink,
+                ImageUrl = pushNotificationRequest.ImageUrl,
+                Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions),
+            };
+
+            var response = await _dopplerMessageService.SendMulticastAsBatches(dto);
+
+            return Ok(response);
+        }
+
+        private SubscriptionDTO[] MapSubscriptions(Subscription[] subscriptions)
+        {
+            if (subscriptions == null)
+            {
+                return null;
+            }
+
+            return subscriptions.Select(sub => new SubscriptionDTO
+            {
+                Endpoint = sub.Endpoint,
+                P256DH = sub.P256DH,
+                Auth = sub.Auth
+            }).ToArray();
         }
     }
 }
