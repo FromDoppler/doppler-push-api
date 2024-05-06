@@ -87,7 +87,7 @@ namespace Doppler.Push.Api.Services
         ///     notification.
         /// </param>
         /// <param name="cancellationToken">The cancellation token to cancel operation.</param>
-        public async Task SendNotificationAsync
+        public async Task<ResponseItem> SendNotificationAsync
         (
             SubscriptionDTO subscription,
             string payload = null,
@@ -98,7 +98,7 @@ namespace Doppler.Push.Api.Services
             var request = GenerateRequestDetails(subscription, payload, options);
             var response = await HttpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-            await HandleResponse(response, subscription).ConfigureAwait(false);
+            return await HandleResponse(response, subscription);
         }
 
         /// <summary>
@@ -125,8 +125,7 @@ namespace Doppler.Push.Api.Services
             if (!string.IsNullOrEmpty(payload) &&
                 (string.IsNullOrEmpty(subscription.Auth) || string.IsNullOrEmpty(subscription.P256DH)))
             {
-                throw new ArgumentException(
-                    @"To send a message with a payload, the subscription must have 'auth' and 'p256dh' keys.");
+                throw new ArgumentException(@"To send a message with a payload, the subscription must have 'auth' and 'p256dh' keys.");
             }
 
             var currentVapidDetails = _vapidDetails;
@@ -140,8 +139,7 @@ namespace Doppler.Push.Api.Services
                 {
                     if (!validOptionsKeys.Contains(key))
                     {
-                        throw new ArgumentException(key + " is an invalid options. The valid options are" +
-                                                    string.Join(",", validOptionsKeys));
+                        throw new ArgumentException(key + " is an invalid options. The valid options are" + string.Join(",", validOptionsKeys));
                     }
                 }
 
@@ -252,12 +250,17 @@ namespace Doppler.Push.Api.Services
         /// </summary>
         /// <param name="response"></param>
         /// <param name="subscription"></param>
-        private static async Task HandleResponse(HttpResponseMessage response, SubscriptionDTO subscription)
+        private static async Task<ResponseItem> HandleResponse(HttpResponseMessage response, SubscriptionDTO subscription)
         {
             // Successful
             if (response.IsSuccessStatusCode)
             {
-                return;
+                return new ResponseItem()
+                {
+                    IsSuccess = true,
+                    // TODO: associate suscription info associated to the current response
+                    // Suscription =
+                };
             }
 
             // Error
@@ -292,8 +295,17 @@ namespace Doppler.Push.Api.Services
                 ? responseCodeMessage
                 : $"{responseCodeMessage}. Details: {details}";
 
-            // TODO: treat exception properly
-            //throw new WebPushException(message, subscription, response);
+            return new ResponseItem()
+            {
+                IsSuccess = false,
+                Exception = new ExceptionItem()
+                {
+                    Message = message,
+                    MessagingErrorCode = (int)response.StatusCode,
+                },
+                // TODO: associate suscription info associated to the current response
+                // Suscription =
+            };
         }
 
         public void Dispose()

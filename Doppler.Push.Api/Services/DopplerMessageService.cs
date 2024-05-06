@@ -1,6 +1,8 @@
 using Doppler.Push.Api.Contract;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Doppler.Push.Api.Services
@@ -38,19 +40,53 @@ namespace Doppler.Push.Api.Services
             // Serializar el objeto a JSON
             string serializedPayload = JsonConvert.SerializeObject(payload);
 
+            var allResponses = new List<ResponseItem>();
+            var allFailureCount = 0;
+            var allSuccessCount = 0;
+
+            // TODO: improve to parallelize shipping
             foreach (var subscription in request.Subscriptions)
             {
-                await _webPushClient.SendNotificationAsync(subscription, serializedPayload);
-
-                //allResponses.AddRange(response.Responses);
-                //allFailureCount += response.FailureCount;
-                //allSuccessCount += response.SuccessCount;
+                try
+                {
+                    var response = await _webPushClient.SendNotificationAsync(subscription, serializedPayload);
+                    allResponses.Add(response);
+                    allSuccessCount += response.IsSuccess ? 1 : 0;
+                    allFailureCount += response.IsSuccess ? 0 : 1;
+                }
+                catch (ArgumentException ex)
+                {
+                    allResponses.Add(new ResponseItem()
+                    {
+                        IsSuccess = false,
+                        Exception = new ExceptionItem()
+                        {
+                            Message = ex.Message,
+                            MessagingErrorCode = (int)HttpStatusCode.BadRequest,
+                        }
+                    });
+                    allFailureCount += 1;
+                }
+                catch (Exception ex)
+                {
+                    allResponses.Add(new ResponseItem()
+                    {
+                        IsSuccess = false,
+                        Exception = new ExceptionItem()
+                        {
+                            Message = ex.Message,
+                            MessagingErrorCode = (int)HttpStatusCode.InternalServerError,
+                        }
+                    });
+                    allFailureCount += 1;
+                }
             }
 
             return new MessageSendResponse()
             {
-                SuccessCount = 0,
-                FailureCount = 0,
+                Responses = allResponses,
+                SuccessCount = allSuccessCount,
+                FailureCount = allFailureCount,
             };
         }
 
