@@ -6,5 +6,6 @@ namespace Doppler.Push.Api.Contract
         public bool IsSuccess { get; set; }
         public ExceptionItem Exception { get; set; }
         public string DeviceToken { get; set; }
+        public SubscriptionDTO Subscription { get; set; }
     }
 }

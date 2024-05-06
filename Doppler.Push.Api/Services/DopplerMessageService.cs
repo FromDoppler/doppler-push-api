@@ -63,7 +63,8 @@ namespace Doppler.Push.Api.Services
                         {
                             Message = ex.Message,
                             MessagingErrorCode = (int)HttpStatusCode.BadRequest,
-                        }
+                        },
+                        Subscription = subscription,
                     });
                     allFailureCount += 1;
                 }
@@ -76,7 +77,8 @@ namespace Doppler.Push.Api.Services
                         {
                             Message = ex.Message,
                             MessagingErrorCode = (int)HttpStatusCode.InternalServerError,
-                        }
+                        },
+                        Subscription = subscription,
                     });
                     allFailureCount += 1;
                 }

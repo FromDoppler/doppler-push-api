@@ -237,8 +237,7 @@ namespace Doppler.Push.Api.Services
             {
                 if (ex is FormatException || ex is ArgumentException)
                 {
-                    // TODO: treat exception properly
-                    //throw new InvalidEncryptionDetailsException("Unable to encrypt the payload with the encryption key of this subscription.", subscription);
+                    throw new ArgumentException("Unable to encrypt the payload with the encryption key of this subscription.");
                 }
 
                 throw;
@@ -258,8 +257,7 @@ namespace Doppler.Push.Api.Services
                 return new ResponseItem()
                 {
                     IsSuccess = true,
-                    // TODO: associate suscription info associated to the current response
-                    // Suscription =
+                    Subscription = subscription,
                 };
             }
 
@@ -303,8 +301,7 @@ namespace Doppler.Push.Api.Services
                     Message = message,
                     MessagingErrorCode = (int)response.StatusCode,
                 },
-                // TODO: associate suscription info associated to the current response
-                // Suscription =
+                Subscription = subscription,
             };
         }
 
