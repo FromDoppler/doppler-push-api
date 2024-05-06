@@ -54,7 +54,7 @@ namespace Doppler.Push.Api.Controllers
                 Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions),
             };
 
-            var response = await _dopplerMessageService.SendMulticastAsBatches(dto);
+            var response = await _dopplerMessageService.SendMulticast(dto);
 
             return Ok(response);
         }
