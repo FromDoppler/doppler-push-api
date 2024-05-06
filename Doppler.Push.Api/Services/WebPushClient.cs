@@ -179,12 +179,6 @@ namespace Doppler.Push.Api.Services
 
             if (!string.IsNullOrEmpty(payload))
             {
-                if (string.IsNullOrEmpty(subscription.P256DH) || string.IsNullOrEmpty(subscription.Auth))
-                {
-                    throw new ArgumentException(
-                        @"Unable to send a message with payload to this subscription since it doesn't have the required encryption key");
-                }
-
                 var encryptedPayload = EncryptPayload(subscription, payload);
 
                 request.Content = new ByteArrayContent(encryptedPayload.Payload);
