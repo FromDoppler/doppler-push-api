@@ -59,6 +59,7 @@ namespace Doppler.Push.Api
 
             services.AddSingleton<FirebaseCloudMessageService>();
             services.AddSingleton<DopplerMessageService>();
+            services.AddSingleton<IMessageServiceFactory, MessageServiceFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

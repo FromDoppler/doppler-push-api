@@ -18,10 +18,10 @@ namespace Doppler.Push.Api.Controllers
         private IMessageService _firebaseCloudMessageService;
         private IMessageService _dopplerMessageService;
 
-        public MessageController(IServiceProvider serviceProvider)
+        public MessageController(IMessageServiceFactory messageServiceFactory)
         {
-            _firebaseCloudMessageService = serviceProvider.GetRequiredService<FirebaseCloudMessageService>();
-            _dopplerMessageService = serviceProvider.GetRequiredService<DopplerMessageService>();
+            _firebaseCloudMessageService = messageServiceFactory.CreateFirebaseCloudMessageService();
+            _dopplerMessageService = messageServiceFactory.CreateDopplerMessageService();
         }
 
         [HttpPost]
