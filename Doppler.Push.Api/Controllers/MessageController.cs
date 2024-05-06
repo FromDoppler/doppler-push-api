@@ -44,7 +44,11 @@ namespace Doppler.Push.Api.Controllers
         [Route("/webpush")]
         public async Task<IActionResult> SendWebPush(PushNotificationRequest pushNotificationRequest)
         {
-            // TODO: reply 400 when "Suscriptions" field is missing
+            if (pushNotificationRequest.Subscriptions == null || pushNotificationRequest.Subscriptions.Length == 0)
+            {
+                return BadRequest("Subscriptions can not be empty.");
+            }
+
             var dto = new PushNotificationDTO()
             {
                 NotificationTitle = pushNotificationRequest.NotificationTitle,
