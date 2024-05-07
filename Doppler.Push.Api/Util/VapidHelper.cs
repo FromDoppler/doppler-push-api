@@ -54,9 +54,9 @@ namespace Doppler.Push.Api.Util
             }
 
 
-            var header = new Dictionary<string, object> {{"typ", "JWT"}, {"alg", "ES256"}};
+            var header = new Dictionary<string, object> { { "typ", "JWT" }, { "alg", "ES256" } };
 
-            var jwtPayload = new Dictionary<string, object> {{"aud", audience}, {"exp", expiration}, {"sub", subject}};
+            var jwtPayload = new Dictionary<string, object> { { "aud", audience }, { "exp", expiration }, { "sub", subject } };
 
             var signingKey = ECKeyHelper.GetPrivateKey(decodedPrivateKey);
 
@@ -152,7 +152,7 @@ namespace Doppler.Push.Api.Util
         private static long UnixTimeNow()
         {
             var timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
-            return (long) timeSpan.TotalSeconds;
+            return (long)timeSpan.TotalSeconds;
         }
 
         private static byte[] ByteArrayPadLeft(byte[] src, int size)

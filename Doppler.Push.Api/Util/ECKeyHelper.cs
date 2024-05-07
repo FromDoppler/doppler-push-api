@@ -26,9 +26,9 @@ namespace Doppler.Push.Api.Util
 
             var reader = new StringReader(pemKey);
             var pemReader = new PemReader(reader);
-            var keyPair = (AsymmetricCipherKeyPair) pemReader.ReadObject();
+            var keyPair = (AsymmetricCipherKeyPair)pemReader.ReadObject();
 
-            return (ECPrivateKeyParameters) keyPair.Private;
+            return (ECPrivateKeyParameters)keyPair.Private;
         }
 
         public static ECPublicKeyParameters GetPublicKey(byte[] publicKey)
@@ -47,7 +47,7 @@ namespace Doppler.Push.Api.Util
             var reader = new StringReader(pemKey);
             var pemReader = new PemReader(reader);
             var keyPair = pemReader.ReadObject();
-            return (ECPublicKeyParameters) keyPair;
+            return (ECPublicKeyParameters)keyPair;
         }
 
         public static AsymmetricCipherKeyPair GenerateKeys()

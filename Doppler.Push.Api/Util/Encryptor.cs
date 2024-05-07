@@ -36,7 +36,7 @@ namespace Doppler.Push.Api.Util
             var userPublicKey = ECKeyHelper.GetPublicKey(userKey);
 
             var key = ecdhAgreement.CalculateAgreement(userPublicKey).ToByteArrayUnsigned();
-            var serverPublicKey = ((ECPublicKeyParameters) serverKeyPair.Public).Q.GetEncoded(false);
+            var serverPublicKey = ((ECPublicKeyParameters)serverKeyPair.Public).Q.GetEncoded(false);
 
             var prk = HKDF(userSecret, key, Encoding.UTF8.GetBytes("Content-Encoding: auth\0"), 32);
             var cek = HKDF(salt, prk, CreateInfoChunk("aesgcm", userKey, serverPublicKey), 16);
@@ -87,7 +87,7 @@ namespace Doppler.Push.Api.Util
         public static byte[] HKDFSecondStep(byte[] key, byte[] info, int length)
         {
             var hmac = new HmacSha256(key);
-            var infoAndOne = info.Concat(new byte[] {0x01}).ToArray();
+            var infoAndOne = info.Concat(new byte[] { 0x01 }).ToArray();
             var result = hmac.ComputeHash(infoAndOne);
 
             if (result.Length > length)
