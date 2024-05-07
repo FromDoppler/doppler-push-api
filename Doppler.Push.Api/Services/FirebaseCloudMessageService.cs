@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Doppler.Push.Api.Services
 {
-    public class FirebaseCloudMessageService : IFirebaseCloudMessageService
+    public class FirebaseCloudMessageService : IMessageService
     {
         private readonly FirebaseMessaging _firebaseService;
         private readonly FirebaseCloudMessageServiceSettings _firebaseCloudMessageServiceSettings;
@@ -30,7 +30,7 @@ namespace Doppler.Push.Api.Services
             _firebaseCloudMessageServiceSettings = firebaseCloudMessageServiceSettings.Value;
         }
 
-        public async Task<FirebaseMessageSendResponse> SendMulticast(FirebaseMessageSendRequest request)
+        public async Task<MessageSendResponse> SendMulticast(PushNotificationDTO request)
         {
             var message = new MulticastMessage()
             {
@@ -53,14 +53,14 @@ namespace Doppler.Push.Api.Services
 
             var response = await _firebaseService.SendMulticastAsync(message);
 
-            var returnResponse = new FirebaseMessageSendResponse()
+            var returnResponse = new MessageSendResponse()
             {
-                Responses = response.Responses.Select((x, index) => new FirebaseResponseItem
+                Responses = response.Responses.Select((x, index) => new ResponseItem
                 {
                     IsSuccess = x.IsSuccess,
                     MessageId = x.MessageId,
                     DeviceToken = request.Tokens[index],
-                    Exception = x.IsSuccess ? null : new FirebaseExceptionItem
+                    Exception = x.IsSuccess ? null : new ExceptionItem
                     {
                         Message = x.Exception.Message,
                         MessagingErrorCode = x.Exception.MessagingErrorCode.HasValue ? (int)x.Exception.MessagingErrorCode : 0
@@ -73,12 +73,12 @@ namespace Doppler.Push.Api.Services
             return returnResponse;
         }
 
-        public async Task<FirebaseMessageSendResponse> SendMulticastAsBatches(FirebaseMessageSendRequest request)
+        public async Task<MessageSendResponse> SendMulticastAsBatches(PushNotificationDTO request)
         {
             var requestsBatches = request.Tokens
                 .Batch(_firebaseCloudMessageServiceSettings.BatchesSize) // TODO: replace with Enumerable.Chunk after NET 6 migration https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.chunk?view=net-6.0
                 .Select(x =>
-                    new FirebaseMessageSendRequest
+                    new PushNotificationDTO
                     {
                         Tokens = x as string[],
                         NotificationTitle = request.NotificationTitle,
@@ -88,7 +88,7 @@ namespace Doppler.Push.Api.Services
                     });
 
             // TODO: refactor to use a declarative implementation instead of mutable variables
-            var allResponses = new List<FirebaseResponseItem>();
+            var allResponses = new List<ResponseItem>();
             var allFailureCount = 0;
             var allSuccessCount = 0;
 
@@ -101,7 +101,7 @@ namespace Doppler.Push.Api.Services
                 allSuccessCount += response.SuccessCount;
             }
 
-            return new FirebaseMessageSendResponse
+            return new MessageSendResponse
             {
                 Responses = allResponses,
                 FailureCount = allFailureCount,

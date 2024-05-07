@@ -1,10 +1,10 @@
 namespace Doppler.Push.Api.Contract
 {
-    public class FirebaseResponseItem
+    public class ResponseItem
     {
         public string MessageId { get; set; }
         public bool IsSuccess { get; set; }
-        public FirebaseExceptionItem Exception { get; set; }
+        public ExceptionItem Exception { get; set; }
         public string DeviceToken { get; set; }
     }
 }

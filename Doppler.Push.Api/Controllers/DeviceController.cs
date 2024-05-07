@@ -12,9 +12,9 @@ namespace Doppler.Push.Api.Controllers
     [ApiController]
     public class DeviceController
     {
-        private readonly IFirebaseCloudMessageService _firebaseCloudMessageService;
+        private readonly IMessageService _firebaseCloudMessageService;
 
-        public DeviceController(IFirebaseCloudMessageService firebaseCloudMessageService)
+        public DeviceController(IMessageService firebaseCloudMessageService)
         {
             _firebaseCloudMessageService = firebaseCloudMessageService;
         }
