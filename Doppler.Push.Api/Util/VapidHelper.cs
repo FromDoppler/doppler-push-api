@@ -50,7 +50,7 @@ namespace Doppler.Push.Api.Util
             }
             else
             {
-                ValidateExpiration(expiration);                
+                ValidateExpiration(expiration);
             }
 
 

@@ -122,8 +122,8 @@ namespace Doppler.Push.Api.Services
 
             var request = new HttpRequestMessage(HttpMethod.Post, subscription.Endpoint);
 
-            if (!string.IsNullOrEmpty(payload) && (string.IsNullOrEmpty(subscription.Auth) ||
-                                                   string.IsNullOrEmpty(subscription.P256DH)))
+            if (!string.IsNullOrEmpty(payload) &&
+                (string.IsNullOrEmpty(subscription.Auth) || string.IsNullOrEmpty(subscription.P256DH)))
             {
                 throw new ArgumentException(
                     @"To send a message with a payload, the subscription must have 'auth' and 'p256dh' keys.");
@@ -285,7 +285,7 @@ namespace Doppler.Push.Api.Services
             string details = null;
             if (response.Content != null)
             {
-                details = await response.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                details = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
             var message = string.IsNullOrEmpty(details)
