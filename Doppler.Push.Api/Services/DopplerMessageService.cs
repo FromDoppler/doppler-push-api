@@ -1,4 +1,5 @@
 using Doppler.Push.Api.Contract;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,17 +10,16 @@ namespace Doppler.Push.Api.Services
 {
     public class DopplerMessageService : IMessageService
     {
-        private IWebPushClient _webPushClient;
+        private readonly IOptions<WebPushSettings> _webPushSettings;
+        private readonly IWebPushClient _webPushClient;
 
-        public DopplerMessageService()
+        public DopplerMessageService(IOptions<WebPushSettings> webPushSettings, IWebPushClient webPushClient)
         {
-            // TODO: obtains these values from config
-            var subject = "https://prueba.com";
-            var publicKey = "REPLACE_WITH_PUBLIC_KEY";
-            var privateKey = "REPLACE_WITH_PRIVATE_KEY";
+            _webPushSettings = webPushSettings;
+            _webPushClient = webPushClient;
 
-            _webPushClient = new WebPushClient();
-            _webPushClient.SetVapidDetails(subject, publicKey, privateKey);
+            var settings = _webPushSettings.Value;
+            _webPushClient.SetVapidDetails(settings.Subject, settings.PublicKey, settings.PrivateKey);
         }
 
         public async Task<MessageSendResponse> SendMulticast(PushNotificationDTO request)
