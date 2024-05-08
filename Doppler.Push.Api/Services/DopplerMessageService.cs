@@ -28,12 +28,13 @@ namespace Doppler.Push.Api.Services
             {
                 Title = request.NotificationTitle,
                 Body = request.NotificationBody,
-                // TODO: replace properly
-                Icon = "https://png.pngtree.com/element_origin_min_pic/16/08/05/1057a3fae73b91b.jpg",
-                // TODO: receive proper data and replace
+                // TODO: validate correct image and icon urls (https, etc)
+                Image = request.ImageUrl,
+                Icon = request.IconUrl,
                 Data = new NotificationData()
                 {
                     MessageId = request.MessageId,
+                    ClickLink = request.NotificationOnClickLink,
                 },
             };
 

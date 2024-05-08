@@ -55,6 +55,7 @@ namespace Doppler.Push.Api.Controllers
                 NotificationBody = pushNotificationRequest.NotificationBody,
                 NotificationOnClickLink = pushNotificationRequest.NotificationOnClickLink,
                 ImageUrl = pushNotificationRequest.ImageUrl,
+                IconUrl = pushNotificationRequest.IconUrl,
                 Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions),
                 MessageId = pushNotificationRequest.MessageId,
             };
