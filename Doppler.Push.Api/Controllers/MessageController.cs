@@ -56,6 +56,7 @@ namespace Doppler.Push.Api.Controllers
                 NotificationOnClickLink = pushNotificationRequest.NotificationOnClickLink,
                 ImageUrl = pushNotificationRequest.ImageUrl,
                 Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions),
+                MessageId = pushNotificationRequest.MessageId,
             };
 
             var response = await _dopplerMessageService.SendMulticast(dto);

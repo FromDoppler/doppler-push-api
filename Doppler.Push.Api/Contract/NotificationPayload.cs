@@ -4,6 +4,7 @@ namespace Doppler.Push.Api.Contract
 {
     public class NotificationData
     {
+        // TODO: analyze: this identifier could be used to count deliveries and clicks
         [JsonProperty("messageId")]
         public string MessageId { get; set; }
     }

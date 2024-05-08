@@ -33,7 +33,7 @@ namespace Doppler.Push.Api.Services
                 // TODO: receive proper data and replace
                 Data = new NotificationData()
                 {
-                    MessageId = "test-api-3333",
+                    MessageId = request.MessageId,
                 },
             };
 

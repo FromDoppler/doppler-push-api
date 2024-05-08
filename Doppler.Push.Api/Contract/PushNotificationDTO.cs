@@ -9,6 +9,9 @@ namespace Doppler.Push.Api.Contract
 
         public string[] Tokens { get; set; }
         public SubscriptionDTO[] Subscriptions { get; set; }
+
+        // TODO: analyze: this identifier could be used to count deliveries and clicks
+        public string MessageId { get; set; }
     }
 
     public class SubscriptionDTO
