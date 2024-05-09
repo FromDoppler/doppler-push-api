@@ -139,7 +139,7 @@ namespace Doppler.Push.Api.Services
                 {
                     if (!validOptionsKeys.Contains(key))
                     {
-                        throw new ArgumentException(key + " is an invalid options. The valid options are" + string.Join(",", validOptionsKeys));
+                        throw new ArgumentException($"{key} is an invalid option. The valid options are {string.Join(",", validOptionsKeys)}");
                     }
                 }
 
