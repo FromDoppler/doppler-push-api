@@ -76,7 +76,8 @@ namespace Doppler.Push.Api.Services
                         IsSuccess = false,
                         Exception = new ExceptionItem()
                         {
-                            Message = ex.Message,
+                            // TODO: set Message = ex.Message, and add logging for the current error
+                            Message = ex.StackTrace != null ? ex.StackTrace : ex.Message,
                             MessagingErrorCode = (int)HttpStatusCode.InternalServerError,
                         },
                         Subscription = subscription,
