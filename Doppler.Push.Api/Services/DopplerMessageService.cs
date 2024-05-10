@@ -24,22 +24,7 @@ namespace Doppler.Push.Api.Services
 
         public async Task<MessageSendResponse> SendMulticast(PushNotificationDTO request)
         {
-            var payload = new NotificationPayload
-            {
-                Title = request.NotificationTitle,
-                Body = request.NotificationBody,
-                // TODO: validate correct image and icon urls (https, etc)
-                Image = request.ImageUrl,
-                Icon = request.IconUrl,
-                Data = new NotificationData()
-                {
-                    MessageId = request.MessageId,
-                    ClickLink = request.NotificationOnClickLink,
-                },
-            };
-
-            // Serializar el objeto a JSON
-            string serializedPayload = JsonConvert.SerializeObject(payload);
+            var serializedPayload = SerializePayload(request);
 
             var allResponses = new List<ResponseItem>();
             var allFailureCount = 0;
@@ -104,6 +89,25 @@ namespace Doppler.Push.Api.Services
         {
             await Task.Yield(); // it allows us to consider an async method without doing an operation
             throw new Exception("Not implemented");
+        }
+
+        private string SerializePayload(PushNotificationDTO pushNotificationDTO)
+        {
+            var payload = new NotificationPayload
+            {
+                Title = pushNotificationDTO.NotificationTitle,
+                Body = pushNotificationDTO.NotificationBody,
+                // TODO: validate correct image and icon urls (https, etc)
+                Image = pushNotificationDTO.ImageUrl,
+                Icon = pushNotificationDTO.IconUrl,
+                Data = new NotificationData()
+                {
+                    MessageId = pushNotificationDTO.MessageId,
+                    ClickLink = pushNotificationDTO.NotificationOnClickLink,
+                },
+            };
+
+            return JsonConvert.SerializeObject(payload);
         }
     }
 }
