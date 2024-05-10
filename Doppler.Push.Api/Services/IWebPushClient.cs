@@ -30,6 +30,6 @@ namespace Doppler.Push.Api.Services
         ///     notification.
         /// </param>
         /// <param name="cancellationToken">The cancellation token to cancel operation.</param>
-        Task SendNotificationAsync(SubscriptionDTO subscription, string payload = null, Dictionary<string, object> options = null, CancellationToken cancellationToken = default);
+        Task<ResponseItem> SendNotificationAsync(SubscriptionDTO subscription, string payload = null, Dictionary<string, object> options = null, CancellationToken cancellationToken = default);
     }
 }

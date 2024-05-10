@@ -60,6 +60,10 @@ namespace Doppler.Push.Api
             services.AddSingleton<FirebaseCloudMessageService>();
             services.AddSingleton<DopplerMessageService>();
             services.AddSingleton<IMessageServiceFactory, MessageServiceFactory>();
+
+            var webPushSettings = Configuration.GetSection("WebPushSettings").Get<WebPushSettings>();
+            services.AddSingleton<IWebPushClient>(new WebPushClient());
+            services.Configure<WebPushSettings>(Configuration.GetSection("WebPushSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

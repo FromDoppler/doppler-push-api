@@ -3,8 +3,6 @@ using Doppler.Push.Api.DopplerSecurity;
 using Doppler.Push.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,17 +42,23 @@ namespace Doppler.Push.Api.Controllers
         [Route("/webpush")]
         public async Task<IActionResult> SendWebPush(PushNotificationRequest pushNotificationRequest)
         {
-            // TODO: reply 400 when "Suscriptions" field is missing
+            if (pushNotificationRequest.Subscriptions == null || pushNotificationRequest.Subscriptions.Length == 0)
+            {
+                return BadRequest("Subscriptions can not be empty.");
+            }
+
             var dto = new PushNotificationDTO()
             {
                 NotificationTitle = pushNotificationRequest.NotificationTitle,
                 NotificationBody = pushNotificationRequest.NotificationBody,
                 NotificationOnClickLink = pushNotificationRequest.NotificationOnClickLink,
                 ImageUrl = pushNotificationRequest.ImageUrl,
+                IconUrl = pushNotificationRequest.IconUrl,
                 Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions),
+                MessageId = pushNotificationRequest.MessageId,
             };
 
-            var response = await _dopplerMessageService.SendMulticastAsBatches(dto);
+            var response = await _dopplerMessageService.SendMulticast(dto);
 
             return Ok(response);
         }
