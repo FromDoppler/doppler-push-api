@@ -31,10 +31,26 @@ namespace Doppler.Push.Api
         private const string TOKEN_SUPERUSER_FALSE_EXPIRE_20330518 = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc1NVIjpmYWxzZSwiZXhwIjoyMDAwMDAwMDAwfQ.qMY3h8VhNxuOBciqrmXpTrRk8ElwDlT_3CYFzqJdXNjnJhKihFVMwjkWVw1EEckCWbKsRoBr-NgRV0SZ0JKWbMr2oGhZJWtqmKA05d8-i_MuuYbxtt--NUoQxg6AsMX989PGf6fSBzo_4szb7J0G6nUvvRxXfMnHMpaIAQUiBLNOoeKwnzsZFfI1ehmYGNmtc-2XyXOEHAnfZeBZw8uMWOp4A5hFBpVsaVCUiRirokjeCMWViVWT9NnVWbA60e_kfLjghEcXWaZfNnX9qtj4OC8QUB33ByUmwuYlTxNnu-qiEaJmbaaTeDD2JrKHf6MR59MlCHbb6BDWt20DBy73WQ";
 
         private readonly WebApplicationFactory<Startup> _factory;
+        private readonly Mock<IMessageService> _firebaseCloudMessageServiceMock = new Mock<IMessageService>();
+        private readonly HttpClient _client;
 
         public DeviceControllerTest(WebApplicationFactory<Startup> factory)
         {
             _factory = factory;
+
+            var messageServiceFactoryMock = new Mock<IMessageServiceFactory>();
+            messageServiceFactoryMock.Setup(f => f.CreateFirebaseCloudMessageService())
+                .Returns(_firebaseCloudMessageServiceMock.Object);
+
+            _client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IMessageServiceFactory>(_ => messageServiceFactoryMock.Object);
+                    services.AddSingleton<IMessageService>(s => _firebaseCloudMessageServiceMock.Object);
+                });
+
+            }).CreateClient(new WebApplicationFactoryClientOptions());
         }
 
         [Fact]
@@ -45,27 +61,16 @@ namespace Doppler.Push.Api
 
             Device device = fixture.Create<Device>();
 
-            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
-
-            firebaseCloudMessageServiceMock
+            _firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
                 .ReturnsAsync(device);
-
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddSingleton(firebaseCloudMessageServiceMock.Object);
-                });
-
-            }).CreateClient(new WebApplicationFactoryClientOptions());
 
             var deviceToken = fixture.Create<string>();
 
             var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}");
 
             // Act
-            var response = await client.SendAsync(request);
+            var response = await _client.SendAsync(request);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -86,20 +91,9 @@ namespace Doppler.Push.Api
 
             Device device = fixture.Create<Device>();
 
-            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
-
-            firebaseCloudMessageServiceMock
+            _firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
                 .ReturnsAsync(device);
-
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddSingleton(firebaseCloudMessageServiceMock.Object);
-                });
-
-            }).CreateClient(new WebApplicationFactoryClientOptions());
 
             var deviceToken = fixture.Create<string>();
 
@@ -109,7 +103,7 @@ namespace Doppler.Push.Api
             };
 
             // Act
-            var response = await client.SendAsync(request);
+            var response = await _client.SendAsync(request);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -208,27 +202,16 @@ namespace Doppler.Push.Api
             // Arrange
             var fixture = new Fixture();
 
-            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
-
-            firebaseCloudMessageServiceMock
+            _firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
                 .ThrowsAsync(new Exception());
-
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddSingleton(firebaseCloudMessageServiceMock.Object);
-                });
-
-            }).CreateClient(new WebApplicationFactoryClientOptions());
 
             var deviceToken = fixture.Create<string>();
 
             var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}");
 
             // Act
-            var response = await client.SendAsync(request);
+            var response = await _client.SendAsync(request);
 
             // Assert
             Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
@@ -242,27 +225,16 @@ namespace Doppler.Push.Api
 
             Device device = fixture.Create<Device>();
 
-            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
-
-            firebaseCloudMessageServiceMock
+            _firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
                 .ReturnsAsync(device);
-
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddSingleton(firebaseCloudMessageServiceMock.Object);
-                });
-
-            }).CreateClient(new WebApplicationFactoryClientOptions());
 
             var deviceToken = fixture.Create<string>();
 
             var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}");
 
             // Act
-            var response = await client.SendAsync(request);
+            var response = await _client.SendAsync(request);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -276,27 +248,16 @@ namespace Doppler.Push.Api
 
             Device device = fixture.Create<Device>();
 
-            var firebaseCloudMessageServiceMock = new Mock<IMessageService>();
-
-            firebaseCloudMessageServiceMock
+            _firebaseCloudMessageServiceMock
                 .Setup(x => x.GetDevice(It.IsAny<string>()))
                 .ReturnsAsync(device);
-
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddSingleton(firebaseCloudMessageServiceMock.Object);
-                });
-
-            }).CreateClient(new WebApplicationFactoryClientOptions());
 
             var deviceToken = fixture.Create<string>();
 
             var request = new HttpRequestMessage(HttpMethod.Get, $"devices/{deviceToken}");
 
             // Act
-            var response = await client.SendAsync(request);
+            var response = await _client.SendAsync(request);
 
             // Assert
             var responseAsString = await response.Content.ReadAsStringAsync();
