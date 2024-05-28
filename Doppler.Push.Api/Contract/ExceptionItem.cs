@@ -1,3 +1,5 @@
+using System;
+
 namespace Doppler.Push.Api.Contract
 {
     public class ExceptionItem
@@ -27,5 +29,6 @@ namespace Doppler.Push.Api.Contract
 
         public int MessagingErrorCode { get; set; }
         public string Message { get; set; }
+        public TimeSpan? RetryAfterSeconds { get; set; }
     }
 }

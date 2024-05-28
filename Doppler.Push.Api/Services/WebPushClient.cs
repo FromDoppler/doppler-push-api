@@ -294,6 +294,7 @@ namespace Doppler.Push.Api.Services
                 {
                     Message = message,
                     MessagingErrorCode = (int)response.StatusCode,
+                    RetryAfterSeconds = response.Headers.RetryAfter != null ? response.Headers.RetryAfter.Delta : null,
                 },
                 Subscription = subscription,
             };
