@@ -1,5 +1,7 @@
 using Doppler.Push.Api.Contract;
 using Doppler.Push.Api.Util;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -22,18 +24,23 @@ namespace Doppler.Push.Api.Services
         // Used so we only cleanup internally created http clients
         private bool _isHttpClientInternallyCreated;
 
-        public WebPushClient()
+        private readonly ILogger<WebPushClient> _logger;
+
+        public WebPushClient(ILogger<WebPushClient> logger)
         {
+            _logger = logger;
         }
 
-        public WebPushClient(HttpClient httpClient)
+        public WebPushClient(HttpClient httpClient, ILogger<WebPushClient> logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
         }
 
-        public WebPushClient(HttpClientHandler httpClientHandler)
+        public WebPushClient(HttpClientHandler httpClientHandler, ILogger<WebPushClient> logger)
         {
             _httpClientHandler = httpClientHandler;
+            _logger = logger;
         }
 
         protected HttpClient HttpClient
@@ -221,7 +228,7 @@ namespace Doppler.Push.Api.Services
             return request;
         }
 
-        private static EncryptionResult EncryptPayload(SubscriptionDTO subscription, string payload)
+        private EncryptionResult EncryptPayload(SubscriptionDTO subscription, string payload)
         {
             try
             {
@@ -243,7 +250,7 @@ namespace Doppler.Push.Api.Services
         /// </summary>
         /// <param name="response"></param>
         /// <param name="subscription"></param>
-        private static async Task<ResponseItem> HandleResponse(HttpResponseMessage response, SubscriptionDTO subscription)
+        private async Task<ResponseItem> HandleResponse(HttpResponseMessage response, SubscriptionDTO subscription)
         {
             // Successful
             if (response.IsSuccessStatusCode)
@@ -269,6 +276,13 @@ namespace Doppler.Push.Api.Services
 
                 case (HttpStatusCode)429:
                     responseCodeMessage = "Too many request";
+                    _logger.LogInformation
+                    (
+                        "({WebPushResponseStatusCode}) Too many request.\n Headers: {ResponseHeaders}\n Subscription: {Subscription}",
+                        (int)response.StatusCode,
+                        JsonConvert.SerializeObject(response.Headers),
+                        JsonConvert.SerializeObject(subscription)
+                    );
                     break;
 
                 case HttpStatusCode.NotFound:

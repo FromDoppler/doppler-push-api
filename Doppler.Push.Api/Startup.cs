@@ -62,7 +62,7 @@ namespace Doppler.Push.Api
             services.AddSingleton<IMessageServiceFactory, MessageServiceFactory>();
 
             var webPushSettings = Configuration.GetSection("WebPushSettings").Get<WebPushSettings>();
-            services.AddSingleton<IWebPushClient>(new WebPushClient());
+            services.AddSingleton<IWebPushClient, WebPushClient>();
             services.Configure<WebPushSettings>(Configuration.GetSection("WebPushSettings"));
         }
 
