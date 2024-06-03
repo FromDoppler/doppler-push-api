@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
-    <PackageReference Include="FirebaseAdmin" Version="2.3.0" />
+    <PackageReference Include="FirebaseAdmin" Version="2.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
     <PackageReference Include="morelinq" Version="3.4.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
