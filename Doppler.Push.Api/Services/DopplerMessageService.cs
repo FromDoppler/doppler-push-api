@@ -1,4 +1,5 @@
 using Doppler.Push.Api.Contract;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
@@ -12,14 +13,17 @@ namespace Doppler.Push.Api.Services
     {
         private readonly IOptions<WebPushSettings> _webPushSettings;
         private readonly IWebPushClient _webPushClient;
+        private readonly ILogger<DopplerMessageService> _logger;
 
-        public DopplerMessageService(IOptions<WebPushSettings> webPushSettings, IWebPushClient webPushClient)
+        public DopplerMessageService(IOptions<WebPushSettings> webPushSettings, IWebPushClient webPushClient, ILogger<DopplerMessageService> logger)
         {
             _webPushSettings = webPushSettings;
             _webPushClient = webPushClient;
 
             var settings = _webPushSettings.Value;
             _webPushClient.SetVapidDetails(settings.Subject, settings.PublicKey, settings.PrivateKey);
+
+            _logger = logger;
         }
 
         public async Task<MessageSendResponse> SendMulticast(PushNotificationDTO request)
@@ -56,13 +60,17 @@ namespace Doppler.Push.Api.Services
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(
+                        ex,
+                        "Unexpected error sending notification. Subscription: {Subscription}",
+                        JsonConvert.SerializeObject(subscription)
+                    );
                     allResponses.Add(new ResponseItem()
                     {
                         IsSuccess = false,
                         Exception = new ExceptionItem()
                         {
-                            // TODO: set Message = ex.Message, and add logging for the current error
-                            Message = ex.StackTrace != null ? ex.StackTrace : ex.Message,
+                            Message = ex.Message,
                             MessagingErrorCode = (int)HttpStatusCode.InternalServerError,
                         },
                         Subscription = subscription,

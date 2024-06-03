@@ -1,5 +1,6 @@
 using AutoFixture;
 using Doppler.Push.Api.Contract;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using System;
@@ -13,11 +14,16 @@ namespace Doppler.Push.Api.Services
 {
     public class DopplerMessageServiceTest
     {
-        private static DopplerMessageService CreateSut(IOptions<WebPushSettings> webPushSettings = null, IWebPushClient webPushClient = null)
+        private static DopplerMessageService CreateSut(
+            IOptions<WebPushSettings> webPushSettings = null,
+            IWebPushClient webPushClient = null,
+            ILogger<DopplerMessageService> logger = null
+        )
         {
             return new DopplerMessageService(
                 webPushSettings ?? Mock.Of<IOptions<WebPushSettings>>(),
-                webPushClient ?? Mock.Of<IWebPushClient>()
+                webPushClient ?? Mock.Of<IWebPushClient>(),
+                logger ?? Mock.Of<ILogger<DopplerMessageService>>()
             );
         }
 
