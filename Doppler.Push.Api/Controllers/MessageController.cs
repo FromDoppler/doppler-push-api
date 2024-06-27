@@ -39,6 +39,7 @@ namespace Doppler.Push.Api.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("/webpush")]
         public async Task<IActionResult> SendWebPush(PushNotificationRequest pushNotificationRequest)
         {
