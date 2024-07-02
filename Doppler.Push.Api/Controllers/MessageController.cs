@@ -39,6 +39,9 @@ namespace Doppler.Push.Api.Controllers
         }
 
         [HttpPost]
+        // TODO: analyze remove the authentication and convert the API into an internal API.
+        // Related to [DOP-1579](https://makingsense.atlassian.net/browse/DOP-1579)
+        [AllowAnonymous]
         [Route("/webpush")]
         public async Task<IActionResult> SendWebPush(PushNotificationRequest pushNotificationRequest)
         {
