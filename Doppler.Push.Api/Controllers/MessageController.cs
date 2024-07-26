@@ -84,7 +84,6 @@ namespace Doppler.Push.Api.Controllers
                         ClickedEventEndpoint = sub.SubscriptionExtraData.ClickedEventEndpoint,
                         ReceivedEventEndpoint = sub.SubscriptionExtraData.ReceivedEventEndpoint,
                     } : null,
-                
             }).ToArray();
         }
     }
