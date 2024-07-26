@@ -20,5 +20,12 @@ namespace Doppler.Push.Api.Contract
         public string Endpoint { get; set; }
         public string P256DH { get; set; }
         public string Auth { get; set; }
+        public SubscriptionExtraDataDTO SubscriptionExtraData { get; set; }
+    }
+
+    public class SubscriptionExtraDataDTO
+    {
+        public string ClickedEventEndpoint { get; set; }
+        public string ReceivedEventEndpoint { get; set; }
     }
 }

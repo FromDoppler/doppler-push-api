@@ -77,7 +77,14 @@ namespace Doppler.Push.Api.Controllers
             {
                 Endpoint = sub.Endpoint,
                 P256DH = sub.P256DH,
-                Auth = sub.Auth
+                Auth = sub.Auth,
+                SubscriptionExtraData = sub.SubscriptionExtraData != null ?
+                    new SubscriptionExtraDataDTO()
+                    {
+                        ClickedEventEndpoint = sub.SubscriptionExtraData.ClickedEventEndpoint,
+                        ReceivedEventEndpoint = sub.SubscriptionExtraData.ReceivedEventEndpoint,
+                    } : null,
+                
             }).ToArray();
         }
     }
