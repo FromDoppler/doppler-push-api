@@ -28,8 +28,6 @@ namespace Doppler.Push.Api.Services
 
         public async Task<MessageSendResponse> SendMulticast(PushNotificationDTO request)
         {
-            var serializedPayload = SerializePayload(request);
-
             var allResponses = new List<ResponseItem>();
             var allFailureCount = 0;
             var allSuccessCount = 0;
@@ -39,6 +37,8 @@ namespace Doppler.Push.Api.Services
             {
                 try
                 {
+                    var serializedPayload = SerializePayload(request, subscription);
+
                     var response = await _webPushClient.SendNotificationAsync(subscription, serializedPayload);
                     allResponses.Add(response);
                     allSuccessCount += response.IsSuccess ? 1 : 0;
@@ -99,7 +99,7 @@ namespace Doppler.Push.Api.Services
             throw new Exception("Not implemented");
         }
 
-        private string SerializePayload(PushNotificationDTO pushNotificationDTO)
+        private string SerializePayload(PushNotificationDTO pushNotificationDTO, SubscriptionDTO subscriptionDTO)
         {
             var payload = new NotificationPayload
             {
@@ -112,6 +112,8 @@ namespace Doppler.Push.Api.Services
                 {
                     MessageId = pushNotificationDTO.MessageId,
                     ClickLink = pushNotificationDTO.NotificationOnClickLink,
+                    ClickedEventEndpoint = subscriptionDTO?.SubscriptionExtraData?.ClickedEventEndpoint,
+                    ReceivedEventEndpoint = subscriptionDTO?.SubscriptionExtraData?.ReceivedEventEndpoint,
                 },
             };
 

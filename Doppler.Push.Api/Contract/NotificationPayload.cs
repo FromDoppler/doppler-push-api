@@ -10,6 +10,12 @@ namespace Doppler.Push.Api.Contract
 
         [JsonProperty("clickLink")]
         public string ClickLink { get; set; }
+
+        [JsonProperty("clickedEventEndpoint")]
+        public string ClickedEventEndpoint { get; set; }
+
+        [JsonProperty("receivedEventEndpoint")]
+        public string ReceivedEventEndpoint { get; set; }
     }
 
     // Note: all of these values are considered on 'showNotification' in the service worker
