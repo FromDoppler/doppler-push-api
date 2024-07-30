@@ -33,7 +33,12 @@ namespace Doppler.Push.Api.Services
             var s1 = fixture.Create<SubscriptionDTO>();
             var r1 = new ResponseItem()
             {
-                Subscription = s1,
+                Subscription = new SubscriptionResponseDTO()
+                {
+                    Endpoint = s1.Endpoint,
+                    Auth = s1.Auth,
+                    P256DH = s1.P256DH,
+                },
                 IsSuccess = true,
                 Exception = null
             };
@@ -41,7 +46,12 @@ namespace Doppler.Push.Api.Services
             var s2 = fixture.Create<SubscriptionDTO>();
             var r2 = new ResponseItem()
             {
-                Subscription = s2,
+                Subscription = new SubscriptionResponseDTO()
+                {
+                    Endpoint = s2.Endpoint,
+                    Auth = s2.Auth,
+                    P256DH = s2.P256DH,
+                },
                 IsSuccess = false,
                 Exception = new ExceptionItem() { Message = "Error in s2" },
             };
@@ -127,7 +137,9 @@ namespace Doppler.Push.Api.Services
 
             var firstSubscriptionResponse = response.Responses.First();
             Assert.NotNull(firstSubscriptionResponse);
-            Assert.Equal(subscription, firstSubscriptionResponse.Subscription);
+            Assert.Equal(subscription.Endpoint, firstSubscriptionResponse.Subscription.Endpoint);
+            Assert.Equal(subscription.Auth, firstSubscriptionResponse.Subscription.Auth);
+            Assert.Equal(subscription.P256DH, firstSubscriptionResponse.Subscription.P256DH);
 
             var responseSubscriptionException = firstSubscriptionResponse.Exception;
             Assert.NotNull(responseSubscriptionException);
@@ -168,7 +180,9 @@ namespace Doppler.Push.Api.Services
 
             var firstSubscriptionResponse = response.Responses.First();
             Assert.NotNull(firstSubscriptionResponse);
-            Assert.Equal(subscription, firstSubscriptionResponse.Subscription);
+            Assert.Equal(subscription.Endpoint, firstSubscriptionResponse.Subscription.Endpoint);
+            Assert.Equal(subscription.Auth, firstSubscriptionResponse.Subscription.Auth);
+            Assert.Equal(subscription.P256DH, firstSubscriptionResponse.Subscription.P256DH);
 
             var responseSubscriptionException = firstSubscriptionResponse.Exception;
             Assert.NotNull(responseSubscriptionException);

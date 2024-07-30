@@ -258,7 +258,13 @@ namespace Doppler.Push.Api.Services
                 return new ResponseItem()
                 {
                     IsSuccess = true,
-                    Subscription = subscription,
+                    Subscription = subscription != null ?
+                        new SubscriptionResponseDTO()
+                        {
+                            Endpoint = subscription.Endpoint,
+                            Auth = subscription.Auth,
+                            P256DH = subscription.P256DH,
+                        } : null,
                 };
             }
 
@@ -310,7 +316,13 @@ namespace Doppler.Push.Api.Services
                     MessagingErrorCode = (int)response.StatusCode,
                     RetryAfterSeconds = response.Headers.RetryAfter != null ? response.Headers.RetryAfter.Delta : null,
                 },
-                Subscription = subscription,
+                Subscription = subscription != null ?
+                    new SubscriptionResponseDTO()
+                    {
+                        Endpoint = subscription.Endpoint,
+                        Auth = subscription.Auth,
+                        P256DH = subscription.P256DH,
+                    } : null,
             };
         }
 
