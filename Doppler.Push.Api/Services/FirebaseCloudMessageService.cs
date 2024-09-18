@@ -51,7 +51,7 @@ namespace Doppler.Push.Api.Services
                 } : null,
             };
 
-            var response = await _firebaseService.SendMulticastAsync(message);
+            var response = await _firebaseService.SendEachForMulticastAsync(message);
 
             var returnResponse = new MessageSendResponse()
             {
