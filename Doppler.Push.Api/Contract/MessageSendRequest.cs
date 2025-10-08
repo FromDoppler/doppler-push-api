@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Doppler.Push.Api.Contract
 {
@@ -17,5 +18,6 @@ namespace Doppler.Push.Api.Contract
         public string ImageUrl { get; set; }
         public string IconUrl { get; set; }
         public List<ActionModel> Actions { get; set; }
+        public bool HasActions => Actions != null && Actions.Any();
     }
 }

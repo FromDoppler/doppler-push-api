@@ -138,6 +138,11 @@ namespace Doppler.Push.Api.Services
         private List<ActionPayload> MapActions(List<ActionDTO> Actions)
         {
             var result = new List<ActionPayload>();
+            if (Actions == null)
+            {
+                return result;
+            }
+
             foreach (var action in Actions)
             {
                 var actionPayload = new ActionPayload()
