@@ -126,10 +126,31 @@ namespace Doppler.Push.Api.Services
                     ClickLink = pushNotificationDTO.NotificationOnClickLink,
                     ClickedEventEndpoint = subscriptionDTO?.SubscriptionExtraData?.ClickedEventEndpoint,
                     ReceivedEventEndpoint = subscriptionDTO?.SubscriptionExtraData?.ReceivedEventEndpoint,
+                    ActionEventEndpoints = subscriptionDTO?.SubscriptionExtraData?.ActionEventEndpoints,
+                    ActionClickLinks = pushNotificationDTO.ActionClickLinks,
                 },
+                Actions = MapActions(pushNotificationDTO.Actions),
             };
 
             return JsonConvert.SerializeObject(payload);
+        }
+
+        private List<ActionPayload> MapActions(List<ActionDTO> Actions)
+        {
+            var result = new List<ActionPayload>();
+            foreach (var action in Actions)
+            {
+                var actionPayload = new ActionPayload()
+                {
+                    Action = action.Action,
+                    Title = action.Title,
+                    Icon = action.Icon,
+                };
+
+                result.Add(actionPayload);
+            }
+
+            return result;
         }
     }
 }
