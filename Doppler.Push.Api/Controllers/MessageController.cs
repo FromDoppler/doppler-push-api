@@ -3,6 +3,7 @@ using Doppler.Push.Api.DopplerSecurity;
 using Doppler.Push.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -59,6 +60,8 @@ namespace Doppler.Push.Api.Controllers
                 IconUrl = pushNotificationRequest.IconUrl,
                 Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions),
                 MessageId = pushNotificationRequest.MessageId,
+                Actions = MapActions(pushNotificationRequest.Actions),
+                ActionClickLinks = pushNotificationRequest.ActionClickLinks,
             };
 
             var response = await _dopplerMessageService.SendMulticast(dto);
@@ -83,8 +86,27 @@ namespace Doppler.Push.Api.Controllers
                     {
                         ClickedEventEndpoint = sub.SubscriptionExtraData.ClickedEventEndpoint,
                         ReceivedEventEndpoint = sub.SubscriptionExtraData.ReceivedEventEndpoint,
+                        ActionEventEndpoints = sub.SubscriptionExtraData.ActionEventEndpoints,
                     } : null,
             }).ToArray();
+        }
+
+        private List<ActionDTO> MapActions(List<ActionModel> Actions)
+        {
+            var result = new List<ActionDTO>();
+            foreach (var action in Actions)
+            {
+                var dto = new ActionDTO()
+                {
+                    Action = action.Action,
+                    Title = action.Title,
+                    Icon = action.Icon,
+                };
+
+                result.Add(dto);
+            }
+
+            return result;
         }
     }
 }
