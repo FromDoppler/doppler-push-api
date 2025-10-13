@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -127,7 +128,7 @@ namespace Doppler.Push.Api.Services
                     ClickedEventEndpoint = subscriptionDTO?.SubscriptionExtraData?.ClickedEventEndpoint,
                     ReceivedEventEndpoint = subscriptionDTO?.SubscriptionExtraData?.ReceivedEventEndpoint,
                     ActionEventEndpoints = subscriptionDTO?.SubscriptionExtraData?.ActionEventEndpoints,
-                    ActionClickLinks = pushNotificationDTO.ActionClickLinks,
+                    ActionClickLinks = MapActionClickLinks(pushNotificationDTO.Actions),
                 },
                 Actions = MapActions(pushNotificationDTO.Actions),
             };
@@ -156,6 +157,18 @@ namespace Doppler.Push.Api.Services
             }
 
             return result;
+        }
+
+        private Dictionary<string, string> MapActionClickLinks(List<ActionDTO> actions)
+        {
+            if (actions == null || !actions.Any())
+            {
+                return null;
+            }
+
+            return actions
+                .Where(a => !string.IsNullOrEmpty(a.Action) && !string.IsNullOrEmpty(a.Link))
+                .ToDictionary(a => a.Action, a => a.Link);
         }
     }
 }
