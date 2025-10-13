@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Doppler.Push.Api.Contract
 {
@@ -16,6 +17,24 @@ namespace Doppler.Push.Api.Contract
 
         [JsonProperty("receivedEventEndpoint")]
         public string ReceivedEventEndpoint { get; set; }
+
+        [JsonProperty("actionEventEndpoints")]
+        public Dictionary<string, string> ActionEventEndpoints { get; set; } = new();
+
+        [JsonProperty("actionClickLinks")]
+        public Dictionary<string, string> ActionClickLinks { get; set; } = new();
+    }
+
+    public class ActionPayload
+    {
+        [JsonProperty("action")]
+        public string Action { get; set; }
+
+        [JsonProperty("title")]
+        public string Title { get; set; }
+
+        [JsonProperty("icon")]
+        public string Icon { get; set; }
     }
 
     // Note: all of these values are considered on 'showNotification' in the service worker
@@ -35,5 +54,8 @@ namespace Doppler.Push.Api.Contract
 
         [JsonProperty("data")]
         public NotificationData Data { get; set; }
+
+        [JsonProperty("actions")]
+        public List<ActionPayload> Actions { get; set; }
     }
 }

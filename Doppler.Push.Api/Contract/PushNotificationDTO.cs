@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Doppler.Push.Api.Contract
 {
     public class PushNotificationDTO
@@ -13,6 +15,15 @@ namespace Doppler.Push.Api.Contract
 
         // TODO: analyze: this identifier could be used to count deliveries and clicks
         public string MessageId { get; set; }
+        public List<ActionDTO> Actions { get; set; }
+        public Dictionary<string, string> ActionClickLinks { get; set; } = new();
+    }
+
+    public class ActionDTO
+    {
+        public string Action { get; set; }
+        public string Title { get; set; }
+        public string Icon { get; set; }
     }
 
     public class SubscriptionDTO
@@ -27,5 +38,6 @@ namespace Doppler.Push.Api.Contract
     {
         public string ClickedEventEndpoint { get; set; }
         public string ReceivedEventEndpoint { get; set; }
+        public Dictionary<string, string> ActionEventEndpoints { get; set; } = new();
     }
 }

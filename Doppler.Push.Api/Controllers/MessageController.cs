@@ -3,6 +3,7 @@ using Doppler.Push.Api.DopplerSecurity;
 using Doppler.Push.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -57,8 +58,10 @@ namespace Doppler.Push.Api.Controllers
                 NotificationOnClickLink = pushNotificationRequest.NotificationOnClickLink,
                 ImageUrl = pushNotificationRequest.ImageUrl,
                 IconUrl = pushNotificationRequest.IconUrl,
-                Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions),
+                Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions, pushNotificationRequest.HasActions),
                 MessageId = pushNotificationRequest.MessageId,
+                Actions = MapActions(pushNotificationRequest.Actions),
+                ActionClickLinks = pushNotificationRequest.HasActions ? pushNotificationRequest.ActionClickLinks : null,
             };
 
             var response = await _dopplerMessageService.SendMulticast(dto);
@@ -66,7 +69,7 @@ namespace Doppler.Push.Api.Controllers
             return Ok(response);
         }
 
-        private SubscriptionDTO[] MapSubscriptions(Subscription[] subscriptions)
+        private SubscriptionDTO[] MapSubscriptions(Subscription[] subscriptions, bool hasActions)
         {
             if (subscriptions == null)
             {
@@ -83,8 +86,32 @@ namespace Doppler.Push.Api.Controllers
                     {
                         ClickedEventEndpoint = sub.SubscriptionExtraData.ClickedEventEndpoint,
                         ReceivedEventEndpoint = sub.SubscriptionExtraData.ReceivedEventEndpoint,
+                        ActionEventEndpoints = hasActions ? sub.SubscriptionExtraData.ActionEventEndpoints : null,
                     } : null,
             }).ToArray();
+        }
+
+        private List<ActionDTO> MapActions(List<ActionModel> Actions)
+        {
+            var result = new List<ActionDTO>();
+            if (Actions == null)
+            {
+                return result;
+            }
+
+            foreach (var action in Actions)
+            {
+                var dto = new ActionDTO()
+                {
+                    Action = action.Action,
+                    Title = action.Title,
+                    Icon = action.Icon,
+                };
+
+                result.Add(dto);
+            }
+
+            return result;
         }
     }
 }
