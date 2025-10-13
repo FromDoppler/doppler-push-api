@@ -61,7 +61,6 @@ namespace Doppler.Push.Api.Controllers
                 Subscriptions = MapSubscriptions(pushNotificationRequest.Subscriptions, pushNotificationRequest.HasActions),
                 MessageId = pushNotificationRequest.MessageId,
                 Actions = MapActions(pushNotificationRequest.Actions),
-                ActionClickLinks = pushNotificationRequest.HasActions ? pushNotificationRequest.ActionClickLinks : null,
             };
 
             var response = await _dopplerMessageService.SendMulticast(dto);
@@ -106,6 +105,7 @@ namespace Doppler.Push.Api.Controllers
                     Action = action.Action,
                     Title = action.Title,
                     Icon = action.Icon,
+                    Link = action.Link,
                 };
 
                 result.Add(dto);
